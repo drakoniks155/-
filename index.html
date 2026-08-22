@@ -27,6 +27,7 @@
       --accent-hover: #4a6ae8;
       --accent-green: #4caf50;
       --accent-red: #f44336;
+      --accent-yellow: #ffc107;
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
       --radius: 16px;
       --radius-sm: 10px;
@@ -54,7 +55,6 @@
       user-select: none;
     }
 
-    /* ===== APP CONTAINER ===== */
     #app {
       display: flex;
       flex-direction: column;
@@ -588,6 +588,62 @@
       font-size: 12px;
     }
 
+    /* ===== VOICE MESSAGE ===== */
+    .voice-msg {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      background: var(--bg-input);
+      border-radius: 12px;
+      min-width: 140px;
+    }
+
+    .voice-msg.mine {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .voice-msg .play-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: #fff;
+      color: #000;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-msg .timeline {
+      flex: 1;
+      height: 4px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .voice-msg .timeline .progress {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s;
+    }
+
+    .voice-msg .duration {
+      font-size: 10px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    /* ===== CHAT INPUT ===== */
     #chatView .chat-input-area {
       display: flex;
       gap: 8px;
@@ -596,6 +652,7 @@
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
+      align-items: center;
     }
 
     #chatView .chat-input-area input {
@@ -629,6 +686,83 @@
 
     #chatView .chat-input-area .send-btn:active {
       background: var(--accent-hover);
+    }
+
+    #chatView .chat-input-area .voice-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      border: 1px solid var(--border-color);
+    }
+
+    #chatView .chat-input-area .voice-btn.recording {
+      background: var(--accent-red);
+      color: #fff;
+      animation: pulse-rec 0.8s infinite;
+    }
+
+    @keyframes pulse-rec {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* ===== REACTION PICKER ===== */
+    .reaction-picker {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .reaction-picker .reaction-btn {
+      font-size: 28px;
+      padding: 8px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: var(--bg-input);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reaction-picker .reaction-btn:active {
+      transform: scale(0.9);
+    }
+
+    .reaction-picker .reaction-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    /* ===== BIG REACTION ===== */
+    .big-reaction-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .big-reaction-overlay .reaction-emoji {
+      font-size: 120px;
+      animation: bigReaction 1.5s ease-out forwards;
+      filter: drop-shadow(0 10px 40px rgba(0,0,0,0.8));
+    }
+
+    @keyframes bigReaction {
+      0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+      20% { transform: scale(1.4) rotate(5deg); opacity: 1; }
+      40% { transform: scale(1) rotate(0deg); }
+      80% { opacity: 1; }
+      100% { transform: scale(1.2) rotate(0deg); opacity: 0; }
     }
 
     /* ===== TOAST ===== */
@@ -780,6 +914,33 @@
 
     .map-controls .map-btn:active {
       background: var(--bg-input);
+    }
+
+    /* ===== LOCATION INFO ===== */
+    .location-info {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      z-index: 1000;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      max-width: 200px;
+      box-shadow: var(--shadow);
+    }
+
+    .location-info .coords {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    .location-info .accuracy {
+      font-size: 10px;
+      color: var(--text-muted);
     }
 
     /* ===== PROFILE VIEW ===== */
@@ -945,6 +1106,34 @@
       margin-bottom: 12px;
     }
 
+    .modal-overlay .bottom-sheet .field {
+      margin-bottom: 12px;
+    }
+
+    .modal-overlay .bottom-sheet .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .modal-overlay .bottom-sheet .field input,
+    .modal-overlay .bottom-sheet .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .modal-overlay .bottom-sheet .field input:focus,
+    .modal-overlay .bottom-sheet .field select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
     /* ===== SCROLLBAR ===== */
     ::-webkit-scrollbar {
       width: 4px;
@@ -1027,6 +1216,10 @@
             <button class="map-btn" id="centerMapBtn" title="Центрировать">📍</button>
             <button class="map-btn" id="toggleLocationBtn" title="Вкл/Выкл геолокацию">📡</button>
             <button class="map-btn" id="savePlaceBtn" title="Сохранить место">⭐</button>
+          </div>
+          <div class="location-info" id="locationInfo">
+            <div class="coords" id="coordsDisplay">Ожидание GPS...</div>
+            <div class="accuracy" id="accuracyDisplay">Точность: ---</div>
           </div>
         </div>
       </div>
@@ -1113,7 +1306,7 @@
           <div class="setting-row">
             <div class="left"><div class="title">📡 Частота обновления GPS</div><div class="desc">Секунд между обновлениями</div></div>
             <select id="gpsInterval" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;padding:6px 10px;font-size:13px;">
-              <option value="3">3 сек</option>
+              <option value="2">2 сек</option>
               <option value="5" selected>5 сек</option>
               <option value="10">10 сек</option>
               <option value="30">30 сек</option>
@@ -1150,9 +1343,11 @@
         <div class="chat-name" id="chatName">Имя</div>
         <div class="chat-status" id="chatStatus">В сети</div>
       </div>
+      <button class="btn-sm ghost" id="chatReactionBtn" style="font-size:20px;">💜</button>
     </div>
     <div class="messages-container" id="messagesContainer"></div>
     <div class="chat-input-area">
+      <button class="voice-btn" id="voiceRecordBtn">🎤</button>
       <input type="text" id="chatInput" placeholder="Сообщение..." maxlength="1000">
       <button class="send-btn" id="chatSendBtn">↑</button>
     </div>
@@ -1247,9 +1442,9 @@
     // ============================================================
     let currentUser = null;
     let currentProfile = null;
-    let allFriends = {}; // uid -> profile
-    let incomingRequests = {}; // uid -> request
-    let chatMeta = {}; // chatId -> { friendUid, lastText, updatedAt, unread }
+    let allFriends = {};
+    let incomingRequests = {};
+    let chatMeta = {};
     let currentChatId = null;
     let currentChatFriendId = null;
 
@@ -1257,9 +1452,21 @@
     let map = null;
     let meMarker = null;
     let friendMarkers = new Map();
+    let friendLocationListeners = new Map();
     let watchId = null;
     let lastLocation = null;
     let locationEnabled = true;
+    let onlineVisible = true;
+    let notifEnabled = true;
+
+    // Voice
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let recordingTimer = null;
+    let recordingSeconds = 0;
+    let recordingStartTime = 0;
+    let stream = null;
 
     // ============================================================
     // TOAST
@@ -1369,6 +1576,7 @@
           avatar: '',
           locationSharing: true,
           online: true,
+          onlineVisible: true,
           createdAt: Date.now(),
           lastSeen: Date.now()
         });
@@ -1411,14 +1619,12 @@
       const snap = await get(ref(db, `profiles/${currentUser.uid}`));
       if (snap.exists()) {
         currentProfile = snap.val();
-        // Если профиль без имени, создаём
         if (!currentProfile.name) {
           const name = `LINK${Math.floor(100 + Math.random() * 900)}`;
           await update(ref(db, `profiles/${currentUser.uid}`), { name });
           currentProfile.name = name;
         }
       } else {
-        // Создаём профиль
         await createUserProfile(currentUser);
         const snap2 = await get(ref(db, `profiles/${currentUser.uid}`));
         currentProfile = snap2.val();
@@ -1444,6 +1650,7 @@
       subscribeRequests();
       subscribeChats();
       subscribeOnlineStatus();
+      subscribeReactions();
       updateUI();
       renderSavedPlaces();
     }
@@ -1459,7 +1666,6 @@
       }
       friendMarkers.forEach(m => { if (map) map.removeLayer(m); });
       friendMarkers.clear();
-      // Удаляем онлайн статус
       if (currentUser) {
         update(ref(db, `profiles/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
       }
@@ -1473,10 +1679,13 @@
       const statusRef = ref(db, `profiles/${currentUser.uid}`);
       onDisconnect(statusRef).update({ online: false, lastSeen: Date.now() });
       
-      // Обновляем каждые 30 секунд
       setInterval(() => {
         if (currentUser) {
-          update(statusRef, { online: true, lastSeen: Date.now() });
+          update(statusRef, { 
+            online: true, 
+            lastSeen: Date.now(),
+            onlineVisible: onlineVisible
+          });
         }
       }, 30000);
     }
@@ -1495,12 +1704,11 @@
         attribution: '© OpenStreetMap'
       }).addTo(map);
 
-      // Zoom control
       L.control.zoom({ position: 'topright' }).addTo(map);
 
       $('centerMapBtn').addEventListener('click', () => {
         if (lastLocation) {
-          map.setView([lastLocation.lat, lastLocation.lng], 15);
+          map.setView([lastLocation.lat, lastLocation.lng], 17);
         } else {
           showToast('Геолокация не определена');
         }
@@ -1514,6 +1722,9 @@
           stopLocationTracking();
         }
         updateLocationToggleUI();
+        if (currentUser) {
+          update(ref(db, `profiles/${currentUser.uid}`), { locationSharing: locationEnabled });
+        }
         showToast(locationEnabled ? '📍 Геолокация включена' : '📍 Геолокация выключена');
       });
 
@@ -1531,12 +1742,11 @@
 
     function updateLocationToggleUI() {
       const btn = $('toggleLocationBtn');
-      btn.textContent = locationEnabled ? '📡' : '📡';
       btn.style.opacity = locationEnabled ? '1' : '0.4';
     }
 
     // ============================================================
-    // LOCATION TRACKING
+    // LOCATION TRACKING (РЕАЛЬНОЕ ВРЕМЯ)
     // ============================================================
     function startLocationTracking() {
       if (!navigator.geolocation) {
@@ -1555,11 +1765,16 @@
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
             accuracy: pos.coords.accuracy || 0,
+            speed: pos.coords.speed || 0,
+            altitude: pos.coords.altitude || 0,
             updatedAt: Date.now()
           };
           lastLocation = loc;
 
-          // Обновляем маркер
+          // Обновляем отображение координат
+          updateLocationDisplay(loc);
+
+          // Обновляем маркер с плавной анимацией
           updateMyMarker(loc);
 
           // Отправляем в Firebase
@@ -1572,13 +1787,32 @@
           if (err.code === 1) {
             showToast('Разрешите доступ к геолокации');
           }
+          $('coordsDisplay').textContent = 'GPS: ошибка';
+          $('accuracyDisplay').textContent = `Ошибка: ${err.message}`;
         },
         {
           enableHighAccuracy: true,
-          maximumAge: 3000,
-          timeout: 15000
+          maximumAge: 2000,
+          timeout: 10000
         }
       );
+    }
+
+    function updateLocationDisplay(loc) {
+      const coordsEl = $('coordsDisplay');
+      const accEl = $('accuracyDisplay');
+      
+      coordsEl.textContent = `${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}`;
+      
+      let accText = `Точность: ${loc.accuracy.toFixed(0)}м`;
+      if (loc.speed > 0) {
+        accText += ` | Скорость: ${(loc.speed * 3.6).toFixed(1)} км/ч`;
+      }
+      if (loc.altitude > 0) {
+        accText += ` | Высота: ${loc.altitude.toFixed(0)}м`;
+      }
+      accText += ` | ${new Date(loc.updatedAt).toLocaleTimeString()}`;
+      accEl.textContent = accText;
     }
 
     function stopLocationTracking() {
@@ -1593,14 +1827,17 @@
         map.removeLayer(meMarker);
         meMarker = null;
       }
+      $('coordsDisplay').textContent = 'Геолокация выключена';
+      $('accuracyDisplay').textContent = '---';
     }
 
     // ============================================================
-    // MY MARKER
+    // MY MARKER (ПЛАВНАЯ АНИМАЦИЯ)
     // ============================================================
     function updateMyMarker(loc) {
       if (!map) return;
       const pos = [loc.lat, loc.lng];
+      
       if (!meMarker) {
         meMarker = L.marker(pos, {
           icon: createMarkerIcon(currentProfile, true),
@@ -1608,6 +1845,7 @@
         }).addTo(map);
         meMarker.bindPopup('<b>Вы</b>');
       } else {
+        // Плавное перемещение
         meMarker.setLatLng(pos);
         meMarker.setIcon(createMarkerIcon(currentProfile, true));
       }
@@ -1640,7 +1878,7 @@
     }
 
     // ============================================================
-    // FRIEND MARKERS
+    // FRIEND MARKERS (С ПЛАВНЫМ ДВИЖЕНИЕМ)
     // ============================================================
     function updateFriendMarker(uid, profile, location) {
       if (!map) return;
@@ -1665,6 +1903,10 @@
         const marker = friendMarkers.get(uid);
         if (map) map.removeLayer(marker);
         friendMarkers.delete(uid);
+        if (friendLocationListeners.has(uid)) {
+          friendLocationListeners.get(uid)();
+          friendLocationListeners.delete(uid);
+        }
       }
     }
 
@@ -1711,7 +1953,6 @@
           </div>
         `).join('');
 
-        // Go to place
         container.querySelectorAll('[data-place-id]').forEach(btn => {
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1725,7 +1966,6 @@
           });
         });
 
-        // Delete place
         container.querySelectorAll('.btn-sm.danger[data-place-id]').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -1761,15 +2001,19 @@
     }
 
     function subscribeFriendLocations() {
-      // Очищаем старые маркеры
-      friendMarkers.forEach((m, uid) => {
+      // Очищаем старые подписки
+      for (const [uid, unsub] of friendLocationListeners) {
         if (!allFriends[uid]) {
+          unsub();
+          friendLocationListeners.delete(uid);
           removeFriendMarker(uid);
         }
-      });
+      }
 
       for (const uid of Object.keys(allFriends)) {
-        onValue(ref(db, `locations/${uid}`), (snap) => {
+        if (friendLocationListeners.has(uid)) continue;
+        
+        const unsub = onValue(ref(db, `locations/${uid}`), (snap) => {
           const loc = snap.val();
           if (loc && allFriends[uid]) {
             updateFriendMarker(uid, allFriends[uid], loc);
@@ -1777,6 +2021,7 @@
             removeFriendMarker(uid);
           }
         });
+        friendLocationListeners.set(uid, unsub);
       }
     }
 
@@ -1835,23 +2080,28 @@
         return;
       }
 
-      list.innerHTML = friendEntries.map(([uid, profile]) => `
-        <div class="friend-item" data-uid="${uid}">
-          <img class="avatar" src="${profile?.avatar || defaultAvatar(profile?.name || '?')}" alt="">
-          <div class="info">
-            <div class="name">${escapeHtml(profile?.name || 'Друг')}</div>
-            <div class="sub">
-              <span class="online-dot ${profile?.online ? 'online' : ''}"></span>
-              ${profile?.online ? 'В сети' : 'Не в сети'}
+      list.innerHTML = friendEntries.map(([uid, profile]) => {
+        const isOnline = profile.online && (profile.onlineVisible !== false);
+        return `
+          <div class="friend-item" data-uid="${uid}">
+            <img class="avatar ${isOnline ? 'online' : ''}" src="${profile?.avatar || defaultAvatar(profile?.name || '?')}" alt="">
+            <div class="info">
+              <div class="name">${escapeHtml(profile?.name || 'Друг')}</div>
+              <div class="sub">
+                <span class="online-dot ${isOnline ? 'online' : ''}"></span>
+                ${isOnline ? 'В сети' : 'Не в сети'}
+                ${profile.lastSeen ? ` • ${new Date(profile.lastSeen).toLocaleTimeString()}` : ''}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn-sm primary chat-btn" data-uid="${uid}">💬</button>
+              <button class="btn-sm secondary location-btn" data-uid="${uid}">📍</button>
+              <button class="btn-sm ghost reaction-btn" data-uid="${uid}">💜</button>
+              <button class="btn-sm danger remove-btn" data-uid="${uid}">✕</button>
             </div>
           </div>
-          <div class="actions">
-            <button class="btn-sm primary chat-btn" data-uid="${uid}">💬</button>
-            <button class="btn-sm secondary location-btn" data-uid="${uid}">📍</button>
-            <button class="btn-sm danger remove-btn" data-uid="${uid}">✕</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       // Chat button
       list.querySelectorAll('.chat-btn').forEach(btn => {
@@ -1881,6 +2131,15 @@
         });
       });
 
+      // Reaction button
+      list.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uid = btn.dataset.uid;
+          openReactionPicker(uid);
+        });
+      });
+
       // Remove button
       list.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
@@ -1905,6 +2164,119 @@
       });
     }
 
+    // ============================================================
+    // REACTIONS (ОТПРАВКА МНОГО МНОГО РЕАКЦИЙ)
+    // ============================================================
+    const REACTIONS_LIST = ['❤️', '🔥', '😂', '🎉', '😱', '⚡', '👋', '😎', '💀', '🥳', '💯', '✨', '💜', '😍'];
+
+    function openReactionPicker(friendUid) {
+      const content = `
+        <div class="sheet-title">💜 Отправить реакцию</div>
+        <div class="reaction-picker">
+          ${REACTIONS_LIST.map(emoji => `
+            <button class="reaction-btn" data-emoji="${emoji}" data-friend="${friendUid}">${emoji}</button>
+          `).join('')}
+        </div>
+        <div style="margin-top:8px;">
+          <label style="color:var(--text-secondary);font-size:12px;">Количество (до 1000)</label>
+          <input type="number" id="reactionCount" value="1" min="1" max="1000" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);">
+        </div>
+        <button class="btn-sm primary" id="sendBigReaction" style="width:100%;padding:12px;margin-top:8px;">💥 Отправить</button>
+      `;
+
+      openModal(content, '');
+
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.dataset.emoji;
+          const uid = btn.dataset.friend;
+          const count = parseInt(document.getElementById('reactionCount').value) || 1;
+          sendReaction(uid, emoji, Math.min(1000, Math.max(1, count)));
+          closeModal();
+        });
+      });
+
+      document.getElementById('sendBigReaction')?.addEventListener('click', () => {
+        const selected = document.querySelector('.reaction-btn.selected');
+        const uid = selected?.dataset.friend;
+        const emoji = selected?.dataset.emoji;
+        const count = parseInt(document.getElementById('reactionCount').value) || 1;
+        if (uid && emoji) {
+          sendReaction(uid, emoji, Math.min(1000, Math.max(1, count)));
+          closeModal();
+        } else {
+          showToast('Выберите реакцию');
+        }
+      });
+
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.reaction-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+
+    async function sendReaction(friendUid, emoji, count = 1) {
+      if (!currentUser) return;
+      
+      try {
+        // Отправляем несколько реакций подряд для эффекта "много"
+        const reactionRef = push(ref(db, `reactions/${friendUid}`));
+        await set(reactionRef, {
+          emoji: emoji,
+          count: Math.min(1000, count),
+          fromUid: currentUser.uid,
+          fromName: currentProfile?.name || 'Друг',
+          createdAt: Date.now()
+        });
+        
+        showToast(`${emoji} ×${Math.min(1000, count)} отправлено!`);
+      } catch (err) {
+        showToast('Ошибка: ' + err.message);
+      }
+    }
+
+    // Подписка на входящие реакции
+    function subscribeReactions() {
+      if (!currentUser) return;
+      onValue(ref(db, `reactions/${currentUser.uid}`), (snap) => {
+        const data = snap.val() || {};
+        for (const [id, reaction] of Object.entries(data)) {
+          if (reaction._shown) continue;
+          reaction._shown = true;
+          showBigReaction(reaction.emoji || '❤️', reaction.fromName || 'Друг', reaction.count || 1);
+          // Удаляем после показа
+          remove(ref(db, `reactions/${currentUser.uid}/${id}`));
+        }
+      });
+    }
+
+    function showBigReaction(emoji, fromName, count) {
+      const overlay = document.createElement('div');
+      overlay.className = 'big-reaction-overlay';
+      
+      const countText = count > 1 ? ` ×${count}` : '';
+      
+      overlay.innerHTML = `
+        <div style="text-align:center;">
+          <div class="reaction-emoji">${emoji}</div>
+          <div style="color:#fff;font-size:20px;font-weight:700;text-shadow:0 4px 20px rgba(0,0,0,0.8);margin-top:10px;">
+            ${fromName} отправил ${countText}
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      // Вибрация
+      if (navigator.vibrate) {
+        navigator.vibrate(count > 5 ? [80, 40, 100] : [50]);
+      }
+      
+      setTimeout(() => overlay.remove(), 2000);
+    }
+
     async function acceptRequest(uid) {
       const req = incomingRequests[uid];
       if (!req) return;
@@ -1920,7 +2292,6 @@
         [`friendRequests/${currentUser.uid}/${uid}`]: null
       });
 
-      // Создаём чат если его нет
       const chatId = [currentUser.uid, uid].sort().join('_');
       await update(ref(db), {
         [`chats/${chatId}/participants/${currentUser.uid}`]: true,
@@ -1982,12 +2353,13 @@
           <img src="${p.avatar || defaultAvatar(p.name || '?')}" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--accent);object-fit:cover;">
           <div style="font-size:20px;font-weight:700;margin-top:8px;">${escapeHtml(p.name || 'Пользователь')}</div>
           <div style="color:var(--text-secondary);font-size:13px;">
-            ${p.online ? '🟢 В сети' : '⚫ Не в сети'}
+            ${p.online && p.onlineVisible !== false ? '🟢 В сети' : '⚫ Не в сети'}
           </div>
           <div style="color:var(--text-muted);font-size:12px;margin-top:4px;">UID: ${uid}</div>
-          <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
             <button class="btn-sm primary" id="profileChatBtn">💬 Написать</button>
             <button class="btn-sm secondary" id="profileMapBtn">📍 Показать на карте</button>
+            <button class="btn-sm ghost" id="profileReactionBtn">💜 Реакция</button>
           </div>
         </div>
       `;
@@ -2010,6 +2382,11 @@
             showToast('Локация недоступна');
           }
         });
+      });
+
+      document.getElementById('profileReactionBtn')?.addEventListener('click', () => {
+        closeModal();
+        openReactionPicker(uid);
       });
     }
 
@@ -2086,7 +2463,7 @@
       const profile = allFriends[friendUid];
       avatar.src = profile.avatar || defaultAvatar(profile.name || '?');
       name.textContent = profile.name || 'Друг';
-      status.textContent = profile.online ? '🟢 В сети' : '⚫ Не в сети';
+      status.textContent = profile.online && profile.onlineVisible !== false ? '🟢 В сети' : '⚫ Не в сети';
 
       chatView.classList.add('open');
       loadMessages();
@@ -2105,7 +2482,6 @@
       if (!currentChatId) return;
       const container = $('messagesContainer');
       
-      // Отписываемся от старых сообщений
       if (window._msgUnsubscribe) {
         window._msgUnsubscribe();
         window._msgUnsubscribe = null;
@@ -2137,13 +2513,53 @@
       container.innerHTML = entries.map(([id, msg]) => {
         const mine = msg.senderUid === currentUser.uid;
         const isDeleted = msg.deleted === true;
+        
+        let content = '';
+        if (isDeleted) {
+          content = '<span class="deleted">Сообщение удалено</span>';
+        } else if (msg.type === 'voice') {
+          content = `
+            <div class="voice-msg ${mine ? 'mine' : ''}">
+              <button class="play-btn" data-audio="${escapeHtml(msg.data || '')}">▶</button>
+              <div class="timeline">
+                <div class="progress" style="width:0%"></div>
+              </div>
+              <span class="duration">${formatDuration(msg.duration || 3)}</span>
+            </div>
+          `;
+        } else {
+          content = escapeHtml(msg.text || '');
+        }
+        
         return `
           <div class="msg ${mine ? 'mine' : 'theirs'}">
-            ${isDeleted ? '<span class="deleted">Сообщение удалено</span>' : escapeHtml(msg.text || '')}
-            ${!isDeleted ? `<div class="time">${formatTime(msg.createdAt)}</div>` : ''}
+            ${content}
+            ${!isDeleted && !msg.type ? `<div class="time">${formatTime(msg.createdAt)}</div>` : ''}
           </div>
         `;
       }).join('');
+
+      // Voice play buttons
+      container.querySelectorAll('.play-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const data = btn.dataset.audio;
+          if (data) {
+            playVoiceMessage(btn, data);
+          }
+        });
+      });
+
+      // Voice timelines
+      container.querySelectorAll('.timeline').forEach(tl => {
+        tl.addEventListener('click', (e) => {
+          const rect = tl.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const playBtn = tl.parentElement.querySelector('.play-btn');
+          if (playBtn && playBtn._audio) {
+            playBtn._audio.currentTime = x * playBtn._audio.duration;
+          }
+        });
+      });
 
       if (isAtBottom || entries.length > 0) {
         setTimeout(() => {
@@ -2152,6 +2568,177 @@
       }
     }
 
+    // ============================================================
+    // VOICE MESSAGES
+    // ============================================================
+    function playVoiceMessage(btn, data) {
+      try {
+        const audioData = data.split(',')[1] || data;
+        const byteCharacters = atob(audioData);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+
+        const audio = new Audio(url);
+        const timeline = btn.parentElement.querySelector('.timeline');
+        const progress = timeline?.querySelector('.progress');
+
+        if (btn._audio && !btn._audio.paused) {
+          btn._audio.pause();
+          btn.textContent = '▶';
+          return;
+        }
+
+        btn._audio = audio;
+        audio.play();
+        btn.textContent = '⏸';
+
+        audio.ontimeupdate = () => {
+          if (progress && audio.duration) {
+            progress.style.width = (audio.currentTime / audio.duration * 100) + '%';
+          }
+        };
+
+        audio.onended = () => {
+          btn.textContent = '▶';
+          if (progress) progress.style.width = '0%';
+        };
+
+        audio.onerror = () => {
+          showToast('Ошибка воспроизведения');
+          btn.textContent = '▶';
+        };
+      } catch (e) {
+        showToast('Ошибка воспроизведения');
+      }
+    }
+
+    // ============================================================
+    // VOICE RECORDING
+    // ============================================================
+    const voiceRecordBtn = $('voiceRecordBtn');
+    let isVoiceRecording = false;
+
+    voiceRecordBtn.addEventListener('click', async () => {
+      if (isVoiceRecording) {
+        stopVoiceRecording();
+        return;
+      }
+      await startVoiceRecording();
+    });
+
+    async function startVoiceRecording() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          if (blob.size > 1000) {
+            const reader = new FileReader();
+            reader.onload = async () => {
+              const base64 = reader.result;
+              await sendVoiceMessage(base64, recordingSeconds);
+            };
+            reader.readAsDataURL(blob);
+          } else {
+            showToast('Запись слишком короткая');
+          }
+          cleanupRecording();
+        };
+
+        mediaRecorder.start(100);
+        isVoiceRecording = true;
+        recordingSeconds = 0;
+        recordingStartTime = Date.now();
+
+        voiceRecordBtn.classList.add('recording');
+        voiceRecordBtn.textContent = '⏹️';
+
+        recordingTimer = setInterval(() => {
+          recordingSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+          if (recordingSeconds >= 60) {
+            showToast('Максимум 60 секунд');
+            stopVoiceRecording();
+          }
+        }, 200);
+
+        showToast('🎤 Запись...');
+      } catch (e) {
+        showToast('Нет доступа к микрофону');
+      }
+    }
+
+    function stopVoiceRecording() {
+      if (mediaRecorder && isVoiceRecording) {
+        mediaRecorder.stop();
+      }
+      cleanupRecording();
+    }
+
+    function cleanupRecording() {
+      isVoiceRecording = false;
+      clearInterval(recordingTimer);
+      voiceRecordBtn.classList.remove('recording');
+      voiceRecordBtn.textContent = '🎤';
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
+
+    async function sendVoiceMessage(base64, duration) {
+      if (!currentChatId || !currentUser) return;
+      const msgRef = push(ref(db, `chats/${currentChatId}/messages`));
+      await set(msgRef, {
+        senderUid: currentUser.uid,
+        type: 'voice',
+        data: base64,
+        duration: duration || 3,
+        createdAt: Date.now()
+      });
+
+      const friendUid = currentChatFriendId;
+      const friendProfile = allFriends[friendUid] || {};
+      const myProfile = { 
+        name: currentProfile?.name || 'Пользователь',
+        avatar: currentProfile?.avatar || ''
+      };
+
+      const oldUnread = chatMeta[currentChatId]?.unread?.[friendUid] || 0;
+
+      await update(ref(db), {
+        [`userChats/${currentUser.uid}/${currentChatId}`]: {
+          friendUid: friendUid,
+          friendProfile: friendProfile,
+          lastText: '🎤 Голосовое сообщение',
+          updatedAt: Date.now(),
+          [`unread/${currentUser.uid}`]: 0
+        },
+        [`userChats/${friendUid}/${currentChatId}`]: {
+          friendUid: currentUser.uid,
+          friendProfile: myProfile,
+          lastText: '🎤 Голосовое сообщение',
+          updatedAt: Date.now(),
+          [`unread/${friendUid}`]: oldUnread + 1
+        }
+      });
+
+      showToast('Голосовое отправлено');
+    }
+
+    // ============================================================
+    // SEND MESSAGE
+    // ============================================================
     $('chatSendBtn').addEventListener('click', sendMessage);
     $('chatInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -2174,7 +2761,6 @@
         createdAt: Date.now()
       });
 
-      // Обновляем мета-данные чата
       const friendUid = currentChatFriendId;
       const friendProfile = allFriends[friendUid] || {};
       const myProfile = { 
@@ -2210,35 +2796,11 @@
     }
 
     // ============================================================
-    // CHAT MESSAGE DELETE (у себя)
+    // CHAT REACTION BUTTON
     // ============================================================
-    // Добавляем возможность удалить сообщение (помечаем как удалённое)
-    // Для этого нужно кликнуть на сообщение
-    $('messagesContainer').addEventListener('dblclick', async (e) => {
-      const msgEl = e.target.closest('.msg');
-      if (!msgEl) return;
-      
-      // Находим id сообщения (сложно без прямой связи, делаем упрощённо)
-      // В реальном проекте нужно хранить id в data-атрибуте
-      // Упрощённо: удаляем последнее своё сообщение
-      if (!currentChatId || !currentUser) return;
-      
-      // Получаем последнее сообщение от пользователя
-      const snap = await get(ref(db, `chats/${currentChatId}/messages`));
-      const data = snap.val() || {};
-      const entries = Object.entries(data)
-        .filter(([id, msg]) => msg.senderUid === currentUser.uid && !msg.deleted)
-        .sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
-
-      if (entries.length) {
-        const [id, msg] = entries[0];
-        if (confirm('Удалить последнее сообщение?')) {
-          await update(ref(db, `chats/${currentChatId}/messages/${id}`), {
-            deleted: true,
-            text: null
-          });
-          showToast('Сообщение удалено');
-        }
+    $('chatReactionBtn').addEventListener('click', () => {
+      if (currentChatFriendId) {
+        openReactionPicker(currentChatFriendId);
       }
     });
 
@@ -2262,7 +2824,6 @@
       friendCount.textContent = `${friendsCount} друзей`;
       statFriends.textContent = friendsCount;
 
-      // Статистика сообщений (приблизительно)
       let msgCount = 0;
       for (const chatId of Object.keys(chatMeta)) {
         const meta = chatMeta[chatId];
@@ -2272,10 +2833,9 @@
       }
       statMessages.textContent = msgCount + Object.keys(chatMeta).length * 5;
 
-      // Онлайн друзья
       let onlineCount = 0;
       for (const [uid, profile] of Object.entries(allFriends)) {
-        if (profile.online) onlineCount++;
+        if (profile.online && profile.onlineVisible !== false) onlineCount++;
       }
       statOnline.textContent = onlineCount;
     }
@@ -2304,7 +2864,6 @@
 
         const updates = { name };
 
-        // Проверяем файл
         const fileInput = document.getElementById('editAvatarFile');
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
@@ -2355,13 +2914,11 @@
     // BADGES
     // ============================================================
     function updateBadges() {
-      // Friend requests
       const reqCount = Object.keys(incomingRequests).length;
       const friendBadge = $('friendBadge');
       friendBadge.textContent = reqCount;
       friendBadge.classList.toggle('hidden', reqCount === 0);
 
-      // Unread messages
       let unreadCount = 0;
       for (const meta of Object.values(chatMeta)) {
         unreadCount += meta.unread?.[currentUser?.uid] || 0;
@@ -2383,7 +2940,6 @@
       localStorage.setItem('link_theme', isDark ? 'light' : 'dark');
     });
 
-    // Restore theme
     const savedTheme = localStorage.getItem('link_theme');
     if (savedTheme === 'light') {
       document.documentElement.setAttribute('data-theme', 'light');
@@ -2409,21 +2965,19 @@
       showToast(locationEnabled ? '📍 Геолокация включена' : '📍 Геолокация выключена');
     });
 
-    // Online toggle
+    // Online toggle (СКРЫТИЕ СТАТУСА)
     const onlineToggle = $('onlineToggle');
-    let onlineVisible = true;
     onlineToggle.addEventListener('click', () => {
       onlineVisible = !onlineVisible;
       onlineToggle.classList.toggle('on', onlineVisible);
       if (currentUser) {
         update(ref(db, `profiles/${currentUser.uid}`), { onlineVisible: onlineVisible });
       }
-      showToast(onlineVisible ? '🟢 Статус виден' : '🔴 Статус скрыт');
+      showToast(onlineVisible ? '🟢 Статус виден всем' : '🔴 Статус скрыт от всех');
     });
 
     // Notifications toggle
     const notifToggle = $('notifToggle');
-    let notifEnabled = true;
     notifToggle.addEventListener('click', () => {
       notifEnabled = !notifEnabled;
       notifToggle.classList.toggle('on', notifEnabled);
@@ -2498,6 +3052,12 @@
       }
     }
 
+    function formatDuration(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `${s}s`;
+    }
+
     // ============================================================
     // UPDATE UI
     // ============================================================
@@ -2512,7 +3072,7 @@
     // ============================================================
     // INIT
     // ============================================================
-    console.log('LINK v3.0 — полностью переписан');
+    console.log('LINK v4.0 — Полная версия с реакциями, голосовыми, скрытием статуса');
   </script>
 </body>
-  </html>
+</html>
