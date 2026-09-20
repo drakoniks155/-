@@ -12,6 +12,7 @@ from firebase_admin import credentials, firestore
 # ============================================================
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 ADMIN_ID = int(os.environ.get("ADMIN_ID", 0))
+SITE_URL = "https://drakoniks155.github.io/-/"
 
 # Firebase
 FIREBASE_JSON = os.environ.get("FIREBASE_JSON")
@@ -47,8 +48,6 @@ if not BOT_TOKEN:
     exit(1)
 
 bot = telebot.TeleBot(BOT_TOKEN)
-
-# Хранилище состояний: {chat_id: {"step": "...", "data": {...}}}
 user_states = {}
 
 
@@ -77,25 +76,35 @@ def run_http_server():
 # КЛАВИАТУРЫ
 # ============================================================
 def user_keyboard():
-    """Клавиатура для пользователя"""
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     kb.add(types.KeyboardButton("📤 Отправить фото"))
-    kb.add(types.KeyboardButton("📸 Посмотреть архив"))
+    kb.add(types.KeyboardButton("🌐 Открыть сайт"))
     return kb
 
 
 def admin_keyboard():
-    """Клавиатура для админа"""
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     kb.add(
         types.KeyboardButton("📸 Все фотографии"),
         types.KeyboardButton("🗑 Удалить пост"),
     )
+    kb.add(types.KeyboardButton("🌐 Открыть сайт"))
     return kb
 
 
 def cancel_keyboard():
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    kb.add(types.KeyboardButton("❌ Отмена"))
+    return kb
+
+
+def category_keyboard():
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    kb.add(
+        types.KeyboardButton("😂 Смешные фото"),
+        types.KeyboardButton("🌳 Прогулка"),
+        types.KeyboardButton("🍲 Еда"),
+    )
     kb.add(types.KeyboardButton("❌ Отмена"))
     return kb
 
@@ -109,21 +118,18 @@ def cmd_start(message):
     user_states.pop(chat_id, None)
 
     if chat_id == ADMIN_ID:
-        # Это админ
         bot.send_message(
             chat_id,
             "👋 *Привет, администратор!*\n\n"
-            "Вы будете получать посты на модерацию.\n"
-            "Также можете посмотреть все фото или удалить пост.",
+            "Все новые фото будут приходить сюда на модерацию.",
             parse_mode='Markdown',
             reply_markup=admin_keyboard()
         )
     else:
-        # Это обычный пользователь
         bot.send_message(
             chat_id,
             "👋 *Добро пожаловать в архив Советского Техникума-Интерната!*\n\n"
-            "Здесь вы можете предложить своё фото в архив.\n"
+            "Здесь вы можете отправить своё фото в архив.\n"
             "После проверки модератором оно появится на сайте.",
             parse_mode='Markdown',
             reply_markup=user_keyboard()
@@ -131,54 +137,43 @@ def cmd_start(message):
 
 
 # ============================================================
-# ПОЛЬЗОВАТЕЛЬ: 📤 Отправить фото
+# 🌐 Открыть сайт
 # ============================================================
-@bot.message_handler(func=lambda m: m.text == "📤 Отправить фото")
-def user_send_photo_start(message):
-    chat_id = message.chat.id
-    user_states[chat_id] = {"step": "waiting_title", "data": {"author": message.from_user.username or message.from_user.first_name or "Гость"}}
+@bot.message_handler(func=lambda m: m.text == "🌐 Открыть сайт")
+def open_site(message):
     bot.send_message(
-        chat_id,
-        "📌 *Шаг 1 из 4*\n\nВведите *заголовок* для вашего фото:",
-        parse_mode='Markdown',
-        reply_markup=cancel_keyboard()
+        message.chat.id,
+        f"🌐 Наш архив:\n\n{SITE_URL}",
+        disable_web_page_preview=False
     )
 
 
 # ============================================================
-# ПОЛЬЗОВАТЕЛЬ: 📸 Посмотреть архив
+# 📤 Отправить фото — шаг 1
 # ============================================================
-@bot.message_handler(func=lambda m: m.text == "📸 Посмотреть архив")
-def user_view_archive(message):
-    if not db:
-        bot.send_message(message.chat.id, "❌ Firebase не подключён")
-        return
+@bot.message_handler(func=lambda m: m.text == "📤 Отправить фото")
+def user_send_photo_start(message):
+    chat_id = message.chat.id
 
-    try:
-        docs = list(db.collection('posts')
-                    .where('status', '==', 'approved')
-                    .order_by('createdAt', direction=firestore.Query.DESCENDING)
-                    .stream())
+    # Определяем username
+    username = message.from_user.username
+    first_name = message.from_user.first_name or "Гость"
+    author = f"@{username}" if username else first_name
 
-        if not docs:
-            bot.send_message(message.chat.id, "📭 В архиве пока нет фотографий", reply_markup=user_keyboard())
-            return
+    user_states[chat_id] = {
+        "step": "waiting_title",
+        "data": {
+            "author": author,
+            "user_id": chat_id
+        }
+    }
 
-        bot.send_message(message.chat.id, f"📸 *В архиве {len(docs)} фото*", parse_mode='Markdown')
-
-        for doc in docs[:10]:  # показываем последние 10
-            data = doc.to_dict()
-            caption = f"*{data.get('title', '')}*\n👤 {data.get('author', 'Гость')}"
-            img = data.get('imageUrl', '')
-            if img:
-                try:
-                    bot.send_photo(message.chat.id, img, caption=caption, parse_mode='Markdown')
-                except:
-                    pass
-
-        bot.send_message(message.chat.id, "🌐 Смотрите все фото на сайте!", reply_markup=user_keyboard())
-    except Exception as e:
-        bot.send_message(message.chat.id, f"❌ Ошибка: {e}")
+    bot.send_message(
+        chat_id,
+        "📌 *Шаг 1 из 4*\n\nВведите *заголовок* для фото:",
+        parse_mode='Markdown',
+        reply_markup=cancel_keyboard()
+    )
 
 
 # ============================================================
@@ -212,8 +207,7 @@ def admin_all_photos(message):
             caption = (
                 f"{status_emoji} *{data.get('title', '')}*\n"
                 f"📂 {data.get('category', '')}\n"
-                f"👤 @{data.get('author', 'Гость')}\n\n"
-                f"📝 {data.get('text', '')[:200]}\n\n"
+                f"👤 {data.get('author', 'Гость')}\n\n"
                 f"🆔 `{doc.id}`"
             )
 
@@ -259,41 +253,39 @@ def handle_text(message):
         bot.send_message(chat_id, "Отменено.", reply_markup=kb)
         return
 
-    # === Пользователь заполняет пост ===
+    # Пользователь вводит заголовок
     if state and state["step"] == "waiting_title":
         state["data"]["title"] = text
         state["step"] = "waiting_category"
-        kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        kb.add(
-            types.KeyboardButton("😂 Смешные фото"),
-            types.KeyboardButton("🌳 Прогулка"),
-            types.KeyboardButton("🍲 Еда")
+        bot.send_message(
+            chat_id,
+            "📌 *Шаг 2 из 4*\n\nВыберите *категорию*:",
+            parse_mode='Markdown',
+            reply_markup=category_keyboard()
         )
-        kb.add(types.KeyboardButton("❌ Отмена"))
-        bot.send_message(chat_id, "📌 *Шаг 2 из 4*\n\nВыберите *категорию*:", parse_mode='Markdown', reply_markup=kb)
         return
 
+    # Пользователь выбирает категорию
     if state and state["step"] == "waiting_category":
         category = text.replace("😂 ", "").replace("🌳 ", "").replace("🍲 ", "").strip()
         if category not in ["Смешные фото", "Прогулка", "Еда"]:
             bot.send_message(chat_id, "❌ Выберите категорию из списка")
             return
         state["data"]["category"] = category
-        state["step"] = "waiting_text"
-        bot.send_message(chat_id, "📌 *Шаг 3 из 4*\n\nВведите *текст* (описание):", parse_mode='Markdown', reply_markup=cancel_keyboard())
-        return
-
-    if state and state["step"] == "waiting_text":
-        state["data"]["text"] = text
         state["step"] = "waiting_photo"
-        bot.send_message(chat_id, "📌 *Шаг 4 из 4*\n\nОтправьте *фотографию*:", parse_mode='Markdown', reply_markup=cancel_keyboard())
+        bot.send_message(
+            chat_id,
+            "📌 *Шаг 3 из 3*\n\nОтправьте *фотографию* 📷",
+            parse_mode='Markdown',
+            reply_markup=cancel_keyboard()
+        )
         return
 
     if state and state["step"] == "waiting_photo":
         bot.send_message(chat_id, "📷 Отправьте фото или нажмите «Отмена»")
         return
 
-    # === Админ удаляет ===
+    # Админ удаляет пост
     if state and state["step"] == "waiting_delete_id":
         try:
             doc_ref = db.collection('posts').document(text)
@@ -303,48 +295,41 @@ def handle_text(message):
                 return
             doc_ref.delete()
             user_states.pop(chat_id, None)
-            bot.send_message(chat_id, f"✅ Пост удалён", reply_markup=admin_keyboard())
+            bot.send_message(chat_id, "✅ Пост удалён", reply_markup=admin_keyboard())
         except Exception as e:
             bot.send_message(chat_id, f"❌ Ошибка: {e}")
         return
 
-    # Если ничего не подошло
     kb = admin_keyboard() if chat_id == ADMIN_ID else user_keyboard()
     bot.send_message(chat_id, "Выберите действие:", reply_markup=kb)
 
 
 # ============================================================
-# ПОЛЬЗОВАТЕЛЬ ОТПРАВИЛ ФОТО → НА МОДЕРАЦИЮ
+# ПОЛЬЗОВАТЕЛЬ ОТПРАВИЛ ФОТО → НА МОДЕРАЦИЮ АДМИНУ
 # ============================================================
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
     chat_id = message.chat.id
     state = user_states.get(chat_id)
 
-    # Админ не в процессе — игнорируем
-    if chat_id == ADMIN_ID and (not state or state["step"] != "waiting_photo"):
-        bot.send_message(chat_id, "Выберите действие:", reply_markup=admin_keyboard())
-        return
-
-    # Пользователь не в процессе
     if not state or state["step"] != "waiting_photo":
-        bot.send_message(chat_id, "Сначала нажмите «📤 Отправить фото»", reply_markup=user_keyboard())
+        kb = admin_keyboard() if chat_id == ADMIN_ID else user_keyboard()
+        bot.send_message(chat_id, "Сначала нажмите «📤 Отправить фото»", reply_markup=kb)
         return
 
+    # Получаем file_id самой большой версии фото
     file_id = message.photo[-1].file_id
 
     try:
-        file_info = bot.get_file(file_id)
-        file_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
-
-        # Создаём пост со статусом pending
+        # Сохраняем пост в Firebase со статусом pending
         post = {
             "title": state["data"].get("title", ""),
             "category": state["data"].get("category", ""),
             "text": state["data"].get("text", ""),
-            "imageUrl": file_url,
             "author": state["data"].get("author", "Гость"),
-            "user_id": chat_id,
+            "user_id": state["data"].get("user_id", chat_id),
+            "imageFileId": file_id,       # ← сохраняем file_id Telegram
+            "imageUrl": "",                # ← пока пусто, заполнится при одобрении
             "status": "pending",
             "createdAt": firestore.SERVER_TIMESTAMP
         }
@@ -355,34 +340,35 @@ def handle_photo(message):
         # Пользователю — подтверждение
         bot.send_message(
             chat_id,
-            "✅ *Ваш пост отправлен на модерацию!*\n\n"
-            "Как только модератор его одобрит, он появится на сайте.",
+            "✅ *Ваше фото отправлено на модерацию!*\n\n"
+            "Как только модератор проверит его — оно появится на сайте.",
             parse_mode='Markdown',
             reply_markup=user_keyboard()
         )
 
         user_states.pop(chat_id, None)
 
-        # Админу — уведомление с кнопками
-        send_to_admin_for_moderation(post_id, post, file_id)
+        # Отправляем АДМИНУ фото с кнопками
+        send_to_admin_with_buttons(post_id, post, file_id)
 
     except Exception as e:
+        print(f"❌ Ошибка сохранения: {e}")
         bot.send_message(chat_id, f"❌ Ошибка: {e}")
 
 
 # ============================================================
-# ОТПРАВКА АДМИНУ НА МОДЕРАЦИЮ
+# ОТПРАВКА АДМИНУ ФОТО С КНОПКАМИ
 # ============================================================
-def send_to_admin_for_moderation(post_id, post, file_id):
+def send_to_admin_with_buttons(post_id, post, file_id):
     emoji = {'Смешные фото': '😂', 'Прогулка': '🌳', 'Еда': '🍲'}.get(post['category'], '📷')
 
     caption = (
-        f"🆕 *Новый пост на модерации*\n\n"
+        f"🆕 *НОВЫЙ ПОСТ НА МОДЕРАЦИИ*\n\n"
         f"{emoji} *Категория:* {post['category']}\n"
         f"📌 *Заголовок:* {post['title']}\n"
-        f"👤 *Автор:* @{post['author']}\n\n"
-        f"📝 *Текст:*\n{post['text']}\n\n"
-        f"🆔 `{post_id}`"
+        f"👤 *Автор:* {post['author']}\n\n"
+        f"🆔 `{post_id}`\n\n"
+        f"👇 Выберите действие:"
     )
 
     keyboard = types.InlineKeyboardMarkup()
@@ -392,9 +378,23 @@ def send_to_admin_for_moderation(post_id, post, file_id):
     )
 
     try:
-        bot.send_photo(ADMIN_ID, file_id, caption=caption, parse_mode='Markdown', reply_markup=keyboard)
+        # Отправляем ФОТО с кнопками
+        bot.send_photo(
+            ADMIN_ID,
+            file_id,
+            caption=caption,
+            parse_mode='Markdown',
+            reply_markup=keyboard
+        )
+        print(f"✅ Пост {post_id} отправлен админу на модерацию")
     except Exception as e:
-        bot.send_message(ADMIN_ID, caption, parse_mode='Markdown', reply_markup=keyboard)
+        print(f"❌ Ошибка отправки админу: {e}")
+        bot.send_message(
+            ADMIN_ID,
+            caption + f"\n\n⚠️ Фото не загрузилось: {e}",
+            parse_mode='Markdown',
+            reply_markup=keyboard
+        )
 
 
 # ============================================================
@@ -418,10 +418,28 @@ def handle_callback(call):
                 bot.answer_callback_query(call.id, "❌ Пост не найден")
                 return
 
-            doc_ref.update({"status": "approved"})
             post = doc.to_dict()
 
-            # Обновляем сообщение — убираем кнопки
+            # Получаем file_id фото
+            file_id = post.get("imageFileId")
+
+            # Формируем публичную ссылку на фото через Telegram
+            # Получаем download URL через Telegram API
+            image_url = ""
+            if file_id:
+                try:
+                    file_info = bot.get_file(file_id)
+                    image_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+                except Exception as e:
+                    print(f"Ошибка получения URL фото: {e}")
+
+            # Обновляем статус + сохраняем URL
+            doc_ref.update({
+                "status": "approved",
+                "imageUrl": image_url
+            })
+
+            # Убираем кнопки
             bot.edit_message_reply_markup(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
@@ -429,29 +447,35 @@ def handle_callback(call):
             )
 
             bot.answer_callback_query(call.id, "✅ Пост одобрен!")
+
+            # Сообщение админу со ссылкой
             bot.send_message(
                 ADMIN_ID,
-                f"✅ *Опубликовано!*\n\n"
+                f"✅ *Пост опубликован на сайте!*\n\n"
                 f"📌 {post.get('title', '')}\n"
-                f"👤 @{post.get('author', 'Гость')}\n"
-                f"Пост теперь виден на сайте.",
-                parse_mode='Markdown'
+                f"👤 {post.get('author', 'Гость')}\n\n"
+                f"🔗 {SITE_URL}",
+                parse_mode='Markdown',
+                disable_web_page_preview=True
             )
 
-            # Уведомляем автора
+            # Автору — уведомление
             user_id = post.get('user_id')
             if user_id:
                 try:
                     bot.send_message(
                         user_id,
-                        f"🎉 *Ваш пост одобрен!*\n\n"
-                        f"📌 «{post.get('title', '')}» теперь опубликован на сайте.",
-                        parse_mode='Markdown'
+                        f"🎉 *Ваш пост одобрен и опубликован на сайте!*\n\n"
+                        f"📌 «{post.get('title', '')}»\n\n"
+                        f"🔗 Посмотреть: {SITE_URL}",
+                        parse_mode='Markdown',
+                        disable_web_page_preview=True
                     )
-                except:
-                    pass
+                except Exception as e:
+                    print(f"Не удалось уведомить автора: {e}")
 
         except Exception as e:
+            print(f"❌ Ошибка одобрения: {e}")
             bot.answer_callback_query(call.id, f"Ошибка: {e}")
 
     # ===== ОТКЛОНИТЬ =====
@@ -465,7 +489,7 @@ def handle_callback(call):
                 return
 
             post = doc.to_dict()
-            doc_ref.delete()  # удаляем полностью
+            doc_ref.delete()
 
             bot.edit_message_reply_markup(
                 chat_id=call.message.chat.id,
@@ -478,11 +502,11 @@ def handle_callback(call):
                 ADMIN_ID,
                 f"❌ *Пост отклонён и удалён*\n\n"
                 f"📌 {post.get('title', '')}\n"
-                f"👤 @{post.get('author', 'Гость')}",
+                f"👤 {post.get('author', 'Гость')}",
                 parse_mode='Markdown'
             )
 
-            # Уведомляем автора
+            # Автору
             user_id = post.get('user_id')
             if user_id:
                 try:
@@ -490,13 +514,14 @@ def handle_callback(call):
                         user_id,
                         f"😔 *Ваш пост отклонён модератором.*\n\n"
                         f"📌 «{post.get('title', '')}»\n\n"
-                        f"Возможно, фото не подходит по тематике или качеству.",
+                        f"Попробуйте отправить другое фото 💜",
                         parse_mode='Markdown'
                     )
                 except:
                     pass
 
         except Exception as e:
+            print(f"❌ Ошибка отклонения: {e}")
             bot.answer_callback_query(call.id, f"Ошибка: {e}")
 
 
@@ -506,5 +531,6 @@ def handle_callback(call):
 if __name__ == '__main__':
     http_thread = threading.Thread(target=run_http_server, daemon=True)
     http_thread.start()
+
     print("🤖 Бот запущен и слушает Telegram...")
     bot.infinity_polling(timeout=60, long_polling_timeout=60)
