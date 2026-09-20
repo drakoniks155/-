@@ -231,19 +231,25 @@
             margin: 0 auto;
         }
 
-        .admin-panel {
+        /* Форма отправки поста */
+        .submit-panel {
             background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
             border-radius: 18px;
             padding: 30px;
             margin-bottom: 30px;
             box-shadow: 0 8px 40px rgba(138, 43, 226, 0.3);
             border: 1px solid rgba(138, 43, 226, 0.4);
-            display: none;
             position: relative;
             overflow: hidden;
+            display: none;
         }
 
-        .admin-panel::before {
+        .submit-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .submit-panel::before {
             content: '';
             position: absolute;
             top: 0;
@@ -254,20 +260,13 @@
             animation: glowLine 3s ease-in-out infinite;
         }
 
-        .admin-panel.active {
-            display: block;
-        }
-
-        .admin-panel h3 {
+        .submit-panel h3 {
             color: var(--purple-light);
             margin-bottom: 22px;
             font-size: 1.45em;
             border-bottom: 2px solid rgba(138, 43, 226, 0.4);
             padding-bottom: 12px;
             text-shadow: 0 0 15px rgba(181, 123, 255, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .form-group {
@@ -399,18 +398,6 @@
             transform: none;
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #dc2626, #991b1b);
-            color: white;
-            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
-        }
-
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.7);
-        }
-
         .moderation-status {
             padding: 15px 20px;
             border-radius: 10px;
@@ -431,22 +418,6 @@
             color: #ffb74d;
             display: block;
             box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
-        }
-
-        .moderation-status.approved {
-            background: rgba(74, 222, 128, 0.15);
-            border: 2px solid #4ade80;
-            color: #4ade80;
-            display: block;
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-        }
-
-        .moderation-status.rejected {
-            background: rgba(220, 38, 38, 0.15);
-            border: 2px solid #dc2626;
-            color: #f87171;
-            display: block;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
         }
 
         .posts-grid {
@@ -554,35 +525,6 @@
             padding-top: 14px;
             flex-wrap: wrap;
             gap: 8px;
-        }
-
-        .moderation-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.82em;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        .moderation-badge.pending {
-            background: rgba(255, 152, 0, 0.15);
-            color: #ffb74d;
-            border: 1px solid #ff9800;
-        }
-
-        .moderation-badge.approved {
-            background: rgba(74, 222, 128, 0.15);
-            color: #4ade80;
-            border: 1px solid #4ade80;
-        }
-
-        .moderation-badge.rejected {
-            background: rgba(220, 38, 38, 0.15);
-            color: #f87171;
-            border: 1px solid #dc2626;
         }
 
         .filters {
@@ -842,17 +784,6 @@
             background: linear-gradient(90deg, transparent, var(--purple-main), transparent);
         }
 
-        footer a {
-            color: var(--purple-light);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        footer a:hover {
-            color: #fff;
-            text-shadow: 0 0 15px var(--purple-light);
-        }
-
         .empty-state {
             text-align: center;
             padding: 70px 20px;
@@ -907,30 +838,6 @@
             transition: all 0.3s;
         }
 
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(138, 43, 226, 0.3), transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(138, 43, 226, 0.5);
-            border-color: var(--purple-light);
-        }
-
         .stat-card .number {
             font-size: 2.8em;
             font-weight: bold;
@@ -972,9 +879,9 @@
         }
 
         .firebase-status.disconnected {
-            background: rgba(220, 38, 38, 0.12);
-            color: #f87171;
-            border: 1px solid rgba(220, 38, 38, 0.4);
+            background: rgba(255, 152, 0, 0.12);
+            color: #ffb74d;
+            border: 1px solid rgba(255, 152, 0, 0.4);
         }
 
         .firebase-status .dot {
@@ -990,8 +897,8 @@
         }
 
         .firebase-status.disconnected .dot {
-            background: #f87171;
-            box-shadow: 0 0 15px #f87171;
+            background: #ffb74d;
+            box-shadow: 0 0 15px #ffb74d;
         }
 
         @keyframes pulse {
@@ -1013,6 +920,32 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Кнопка "Поделиться" */
+        .share-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.8em;
+            box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6);
+            transition: all 0.3s;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 12px 40px rgba(138, 43, 226, 0.9);
         }
 
         @media (max-width: 768px) {
@@ -1084,8 +1017,16 @@
                 font-size: 2.2em;
             }
 
-            .admin-panel {
+            .submit-panel {
                 padding: 22px 18px;
+            }
+
+            .share-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.5em;
+                bottom: 20px;
+                right: 20px;
             }
         }
 
@@ -1111,14 +1052,13 @@
         <a href="#" onclick="showSection('home'); return false;">🏠 Главная</a>
         <a href="#" onclick="showSection('archive'); return false;">📚 Архив</a>
         <a href="#" onclick="showSection('about'); return false;">ℹ️ О проекте</a>
-        <a href="#" onclick="showSection('admin'); return false;">⚙️ Админ-панель</a>
     </nav>
 
     <div class="container">
 
         <div class="firebase-status disconnected" id="firebaseStatus">
             <span class="dot"></span>
-            <span id="firebaseStatusText">Firebase не подключён</span>
+            <span id="firebaseStatusText">Загрузка...</span>
         </div>
 
         <div id="homeSection">
@@ -1127,8 +1067,7 @@
                 <p>
                     Этот сайт посвящён сохранению памяти о Советском Техникуме-Интернате.
                     Здесь вы найдёте смешные фотографии, снимки с прогулок, моменты из столовой
-                    и другие тёплые воспоминания. Каждый пост проходит проверку модератором
-                    через Telegram-бота перед публикацией.
+                    и другие тёплые воспоминания.
                 </p>
             </div>
 
@@ -1140,10 +1079,6 @@
                 <div class="stat-card">
                     <div class="number" id="approvedPosts">0</div>
                     <div class="label">Опубликовано</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="pendingPosts">0</div>
-                    <div class="label">На модерации</div>
                 </div>
                 <div class="stat-card">
                     <div class="number" id="totalPhotos">0</div>
@@ -1178,11 +1113,6 @@
             </div>
 
             <div class="filters">
-                <select id="statusFilter" onchange="filterPosts()">
-                    <option value="all">Все статусы</option>
-                    <option value="approved">Опубликованные</option>
-                    <option value="pending">На модерации</option>
-                </select>
                 <input type="text" id="searchInput" placeholder="🔍 Поиск по архиву..." oninput="filterPosts()">
             </div>
 
@@ -1221,10 +1151,10 @@
             <div class="hero">
                 <h2>⚙️ Как это работает</h2>
                 <p>
-                    1. Автор отправляет материал через форму на сайте<br>
-                    2. Модератор получает фото и текст в Telegram<br>
-                    3. После одобрения пост публикуется на сайте<br>
-                    4. Материал становится доступен всем посетителям
+                    1. Нажмите кнопку <strong style="color: var(--purple-light);">✏️</strong> внизу справа<br>
+                    2. Заполните форму и загрузите фотографию<br>
+                    3. Пост уходит модератору в Telegram<br>
+                    4. После одобрения он появляется на сайте
                 </p>
             </div>
             <div class="hero">
@@ -1235,64 +1165,58 @@
             </div>
         </div>
 
-        <div id="adminSection" style="display:none;">
-            <div class="hero">
-                <h2>⚙️ Панель администратора</h2>
-                <p>Управление публикациями и модерация</p>
+    </div>
+
+    <!-- Плавающая кнопка "Поделиться" -->
+    <button class="share-btn" onclick="toggleSubmitPanel()" title="Предложить материал">✏️</button>
+
+    <!-- Панель отправки (скрытая, открывается кнопкой) -->
+    <div class="container" id="submitContainer" style="display:none;">
+        <div class="submit-panel active">
+            <h3>✏️ Предложить материал в архив</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95em;">
+                Заполните форму — пост уйдёт на проверку модератору в Telegram
+            </p>
+
+            <div class="form-group">
+                <label>Заголовок *</label>
+                <input type="text" id="postTitle" placeholder="Введите заголовок...">
             </div>
 
-            <div class="admin-panel active">
-                <h3>➕ Добавить новый пост</h3>
-
-                <div class="form-group">
-                    <label>Заголовок *</label>
-                    <input type="text" id="postTitle" placeholder="Введите заголовок...">
-                </div>
-
-                <div class="form-group">
-                    <label>Категория *</label>
-                    <select id="postCategory">
-                        <option value="Смешные фото">😂 Смешные фото</option>
-                        <option value="Прогулка">🌳 Прогулка</option>
-                        <option value="Еда">🍲 Еда</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Текст поста *</label>
-                    <textarea id="postText" placeholder="Введите текст..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Фотография *</label>
-                    <div class="photo-upload" id="photoUpload" onclick="document.getElementById('photoInput').click()">
-                        <span class="icon">📷</span>
-                        <p>Нажмите для загрузки фотографии</p>
-                        <p style="font-size:0.85em; color:#6b5a85; margin-top:5px;">JPG, PNG до 5MB</p>
-                        <img class="photo-preview" id="photoPreview">
-                    </div>
-                    <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoSelect(event)">
-                </div>
-
-                <div class="moderation-status" id="moderationStatus"></div>
-
-                <button class="btn btn-primary" id="submitBtn" onclick="submitPost()">
-                    🚀 Отправить на модерацию
-                </button>
+            <div class="form-group">
+                <label>Категория *</label>
+                <select id="postCategory">
+                    <option value="Смешные фото">😂 Смешные фото</option>
+                    <option value="Прогулка">🌳 Прогулка</option>
+                    <option value="Еда">🍲 Еда</option>
+                </select>
             </div>
 
-            <div class="admin-panel active">
-                <h3>🗂️ Управление постами</h3>
-                <div class="posts-grid" id="adminPostsGrid">
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <h3>Нет постов</h3>
-                        <p>Добавьте первый пост через форму выше</p>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label>Текст поста *</label>
+                <textarea id="postText" placeholder="Введите текст..."></textarea>
             </div>
+
+            <div class="form-group">
+                <label>Фотография *</label>
+                <div class="photo-upload" id="photoUpload" onclick="document.getElementById('photoInput').click()">
+                    <span class="icon">📷</span>
+                    <p>Нажмите для загрузки фотографии</p>
+                    <p style="font-size:0.85em; color:#6b5a85; margin-top:5px;">JPG, PNG до 5MB</p>
+                    <img class="photo-preview" id="photoPreview">
+                </div>
+                <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoSelect(event)">
+            </div>
+
+            <div class="moderation-status" id="moderationStatus"></div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="submitPost()" style="width:100%;">
+                🚀 Отправить на модерацию
+            </button>
+            <button class="btn" onclick="toggleSubmitPanel()" style="width:100%; margin-top:10px; background: rgba(138,43,226,0.2); color: var(--purple-light); border: 2px solid rgba(138,43,226,0.4);">
+                Отмена
+            </button>
         </div>
-
     </div>
 
     <div class="modal-overlay" id="modalOverlay">
@@ -1312,7 +1236,7 @@
 
     <script type="module">
         // ============================================================
-        // КОНФИГУРАЦИЯ FIREBASE (замените на свои данные)
+        // КОНФИГУРАЦИЯ FIREBASE
         // ============================================================
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
@@ -1326,11 +1250,12 @@
         // ============================================================
         // КОНФИГУРАЦИЯ TELEGRAM БОТА
         // ============================================================
-        // ✅ Токен вашего бота (вставлен)
         const TELEGRAM_BOT_TOKEN = "8949342076:AAGIMPeRnthC-CjyCSe6ME-4K9Z8JuVm2bI";
-
-        // ✅ Ваш Telegram ID (chat_id) — вставлен
         const TELEGRAM_CHAT_ID = "7709067838";
+
+        // URL вашего сайта (для кнопок в Telegram)
+        // Замените на реальный адрес, где будет размещён сайт
+        const SITE_URL = "https://your-site.com";
 
         // ============================================================
         // ИМПОРТ FIREBASE
@@ -1350,32 +1275,43 @@
                 storage = getStorage(app);
                 firebaseReady = true;
 
-                const statusEl = document.getElementById('firebaseStatus');
-                const statusText = document.getElementById('firebaseStatusText');
-                statusEl.className = 'firebase-status connected';
-                statusText.textContent = '✅ Firebase подключён';
+                document.getElementById('firebaseStatus').className = 'firebase-status connected';
+                document.getElementById('firebaseStatusText').textContent = '✅ Firebase подключён';
 
-                console.log('✅ Firebase успешно подключён');
+                console.log('✅ Firebase подключён');
                 loadPosts();
             } catch (error) {
-                console.error('❌ Ошибка подключения Firebase:', error);
-                const statusEl = document.getElementById('firebaseStatus');
-                const statusText = document.getElementById('firebaseStatusText');
-                statusEl.className = 'firebase-status disconnected';
-                statusText.textContent = '⚠️ Демо-режим (Firebase не настроен)';
+                console.error('❌ Firebase:', error);
+                document.getElementById('firebaseStatus').className = 'firebase-status disconnected';
+                document.getElementById('firebaseStatusText').textContent = '⚠️ Демо-режим';
 
-                loadEmptyData();
+                // Пробуем загрузить локальные посты из localStorage
+                loadLocalPosts();
             }
         }
 
         // ============================================================
-        // ПУСТЫЕ ДАННЫЕ
+        // ЛОКАЛЬНЫЕ ПОСТЫ (для демо-режима)
         // ============================================================
         let allPosts = [];
 
-        function loadEmptyData() {
-            renderPosts([]);
-            updateStats([]);
+        function loadLocalPosts() {
+            try {
+                const saved = localStorage.getItem('archive_posts');
+                allPosts = saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                allPosts = [];
+            }
+            renderPosts(allPosts);
+            updateStats(allPosts);
+        }
+
+        function saveLocalPosts() {
+            try {
+                localStorage.setItem('archive_posts', JSON.stringify(allPosts));
+            } catch (e) {
+                console.warn('Не удалось сохранить локально:', e);
+            }
         }
 
         // ============================================================
@@ -1383,7 +1319,7 @@
         // ============================================================
         async function loadPosts() {
             if (!firebaseReady) {
-                loadEmptyData();
+                loadLocalPosts();
                 return;
             }
 
@@ -1401,8 +1337,8 @@
                 renderPosts(allPosts);
                 updateStats(allPosts);
             } catch (error) {
-                console.error('Ошибка загрузки постов:', error);
-                loadEmptyData();
+                console.error('Ошибка загрузки:', error);
+                loadLocalPosts();
             }
         }
 
@@ -1441,6 +1377,24 @@
         };
 
         // ============================================================
+        // ОТКРЫТЬ/ЗАКРЫТЬ ПАНЕЛЬ ОТПРАВКИ
+        // ============================================================
+        window.toggleSubmitPanel = function() {
+            const container = document.getElementById('submitContainer');
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                // Скрываем остальные секции
+                document.getElementById('homeSection').style.display = 'none';
+                document.getElementById('archiveSection').style.display = 'none';
+                document.getElementById('aboutSection').style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                container.style.display = 'none';
+                document.getElementById('homeSection').style.display = 'block';
+            }
+        };
+
+        // ============================================================
         // ОТПРАВКА ПОСТА
         // ============================================================
         window.submitPost = async function() {
@@ -1454,7 +1408,7 @@
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Отправка на модерацию...';
+            submitBtn.innerHTML = '<span class="spinner"></span>Отправка...';
 
             try {
                 const statusEl = document.getElementById('moderationStatus');
@@ -1471,12 +1425,14 @@
                         title: title,
                         category: category,
                         text: text,
-                        imageBase64: base64Image,
                         status: 'pending',
                         createdAt: new Date(),
-                        author: 'Пользователь'
+                        author: 'Гость'
                     };
 
+                    let postId = null;
+
+                    // Сохраняем в Firebase
                     if (firebaseReady) {
                         try {
                             const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
@@ -1488,27 +1444,28 @@
                                 await uploadString(storageRef, base64Image, 'data_url');
                                 imageUrl = await getDownloadURL(storageRef);
                             } catch (err) {
-                                console.warn('Storage недоступен, используем base64:', err);
+                                console.warn('Storage недоступен:', err);
                                 imageUrl = base64Image;
                             }
 
                             post.imageUrl = imageUrl;
-                            delete post.imageBase64;
-
-                            await addDoc(collection(db, 'posts'), post);
-                            console.log('✅ Пост сохранён в Firebase');
+                            const docRef = await addDoc(collection(db, 'posts'), post);
+                            postId = docRef.id;
+                            console.log('✅ Пост сохранён в Firebase:', postId);
                         } catch (error) {
-                            console.error('Ошибка сохранения:', error);
-                            showNotification('Ошибка сохранения. Попробуйте позже.', 'error');
+                            console.error('Ошибка сохранения в Firebase:', error);
                         }
                     } else {
+                        // Демо-режим
                         post.id = 'local_' + Date.now();
                         post.imageUrl = base64Image;
-                        delete post.imageBase64;
+                        postId = post.id;
                         allPosts.unshift(post);
+                        saveLocalPosts();
                     }
 
-                    await sendToTelegram(post);
+                    // Отправляем в Telegram
+                    await sendToTelegram(post, base64Image, postId);
 
                     resetForm();
                     showNotification('✅ Пост отправлен на модерацию!', 'success');
@@ -1517,9 +1474,14 @@
 
                     renderPosts(allPosts);
                     updateStats(allPosts);
+
+                    // Закрываем панель через 3 секунды
+                    setTimeout(() => {
+                        toggleSubmitPanel();
+                    }, 3000);
                 };
             } catch (error) {
-                console.error('Ошибка отправки:', error);
+                console.error('Ошибка:', error);
                 showNotification('Ошибка отправки поста', 'error');
                 submitBtn.disabled = false;
                 submitBtn.textContent = '🚀 Отправить на модерацию';
@@ -1529,7 +1491,7 @@
         // ============================================================
         // ОТПРАВКА В TELEGRAM
         // ============================================================
-        async function sendToTelegram(post) {
+        async function sendToTelegram(post, base64Image, postId) {
             try {
                 const categoryEmoji = {
                     'Смешные фото': '😂',
@@ -1547,8 +1509,15 @@ ${categoryEmoji} *Категория:* ${post.category}
 📄 *Текст:*
 ${post.text}
 
-⏳ *Статус:* Ожидает проверки
-📅 *Дата:* ${new Date().toLocaleString('ru-RU')}
+🆔 *ID поста:* \`${postId}\`
+
+⏳ Ожидает проверки
+📅 ${new Date().toLocaleString('ru-RU')}
+
+💡 *Чтобы одобрить или отклонить пост:*
+Откройте админ-бота и используйте команды:
+\`/approve ${postId}\`
+\`/reject ${postId}\`
                 `;
 
                 // Отправляем текст
@@ -1563,24 +1532,23 @@ ${post.text}
                 });
 
                 const textResult = await textResponse.json();
-                if (!textResult.ok) {
-                    console.error('❌ Ошибка Telegram (текст):', textResult);
-                    showNotification('Ошибка Telegram: ' + (textResult.description || 'неизвестно'), 'error');
-                } else {
+                if (textResult.ok) {
                     console.log('✅ Текст отправлен в Telegram');
+                } else {
+                    console.error('❌ Ошибка Telegram:', textResult);
                 }
 
                 // Отправляем фото
-                const imageSource = post.imageBase64 || post.imageUrl;
-                if (imageSource) {
+                if (base64Image) {
                     try {
-                        const response = await fetch(imageSource);
+                        const response = await fetch(base64Image);
                         const blob = await response.blob();
 
                         const formData = new FormData();
                         formData.append('chat_id', TELEGRAM_CHAT_ID);
                         formData.append('photo', blob, 'photo.jpg');
-                        formData.append('caption', `📷 Фото к посту: ${post.title}`);
+                        formData.append('caption', `📷 Фото к посту: ${post.title}\n🆔 ${postId}`);
+                        formData.append('parse_mode', 'Markdown');
 
                         const photoResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
                             method: 'POST',
@@ -1588,9 +1556,7 @@ ${post.text}
                         });
 
                         const photoResult = await photoResponse.json();
-                        if (!photoResult.ok) {
-                            console.error('❌ Ошибка Telegram (фото):', photoResult);
-                        } else {
+                        if (photoResult.ok) {
                             console.log('✅ Фото отправлено в Telegram');
                         }
                     } catch (err) {
@@ -1599,7 +1565,6 @@ ${post.text}
                 }
             } catch (error) {
                 console.error('Ошибка отправки в Telegram:', error);
-                showNotification('Не удалось отправить в Telegram', 'error');
             }
         }
 
@@ -1633,7 +1598,6 @@ ${post.text}
         function renderPosts(posts) {
             const grid = document.getElementById('postsGrid');
             const archiveGrid = document.getElementById('archiveGrid');
-            const adminGrid = document.getElementById('adminPostsGrid');
 
             const approvedPosts = posts.filter(p => p.status === 'approved');
 
@@ -1665,20 +1629,6 @@ ${post.text}
                     `;
                 } else {
                     archiveGrid.innerHTML = approvedPosts.map(post => createPostCard(post)).join('');
-                }
-            }
-
-            if (adminGrid) {
-                if (posts.length === 0) {
-                    adminGrid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">📭</div>
-                            <h3>Нет постов</h3>
-                            <p>Добавьте первый пост через форму выше</p>
-                        </div>
-                    `;
-                } else {
-                    adminGrid.innerHTML = posts.map(post => createAdminPostCard(post)).join('');
                 }
             }
 
@@ -1742,93 +1692,11 @@ ${post.text}
                         <p class="post-text">${escapeHtml(post.text.substring(0, 150))}${post.text.length > 150 ? '...' : ''}</p>
                         <div class="post-meta">
                             <span>📅 ${date}</span>
-                            <span class="moderation-badge approved">✓ Опубликовано</span>
                         </div>
                     </div>
                 </div>
             `;
         }
-
-        function createAdminPostCard(post) {
-            const date = post.createdAt ? new Date(post.createdAt.seconds ? post.createdAt.seconds * 1000 : post.createdAt).toLocaleDateString('ru-RU') : '';
-            const imageUrl = post.imageUrl || post.imageBase64 || 'https://via.placeholder.com/800x600/1a0b2e/b57bff?text=Фото';
-            const emoji = getCategoryEmoji(post.category);
-
-            let statusBadge = '';
-            let actions = '';
-
-            if (post.status === 'pending') {
-                statusBadge = '<span class="moderation-badge pending">⏳ На модерации</span>';
-                actions = `
-                    <button class="btn btn-primary" style="margin-top:12px; width:100%; font-size:0.9em; padding:10px;" onclick="event.stopPropagation(); approvePost('${post.id}')">✓ Одобрить</button>
-                    <button class="btn btn-danger" style="margin-top:8px; width:100%; font-size:0.9em; padding:10px;" onclick="event.stopPropagation(); rejectPost('${post.id}')">✗ Отклонить</button>
-                `;
-            } else if (post.status === 'approved') {
-                statusBadge = '<span class="moderation-badge approved">✓ Опубликовано</span>';
-            } else {
-                statusBadge = '<span class="moderation-badge rejected">✗ Отклонено</span>';
-            }
-
-            return `
-                <div class="post-card">
-                    <img class="post-image" src="${imageUrl}" alt="${post.title}" loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/800x600/1a0b2e/b57bff?text=Фото'">
-                    <div class="post-body">
-                        <span class="post-category">${emoji} ${post.category}</span>
-                        <h3>${escapeHtml(post.title)}</h3>
-                        <p class="post-text">${escapeHtml(post.text.substring(0, 100))}...</p>
-                        <div class="post-meta">
-                            <span>📅 ${date}</span>
-                            ${statusBadge}
-                        </div>
-                        ${actions}
-                    </div>
-                </div>
-            `;
-        }
-
-        // ============================================================
-        // МОДЕРАЦИЯ
-        // ============================================================
-        window.approvePost = async function(postId) {
-            if (!confirm('Одобрить этот пост?')) return;
-
-            try {
-                if (firebaseReady && !postId.startsWith('local_')) {
-                    const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                    await updateDoc(doc(db, 'posts', postId), { status: 'approved' });
-                }
-
-                const post = allPosts.find(p => p.id === postId);
-                if (post) post.status = 'approved';
-
-                showNotification('✅ Пост одобрен!', 'success');
-                loadPosts();
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showNotification('Ошибка при одобрении', 'error');
-            }
-        };
-
-        window.rejectPost = async function(postId) {
-            if (!confirm('Отклонить этот пост?')) return;
-
-            try {
-                if (firebaseReady && !postId.startsWith('local_')) {
-                    const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                    await updateDoc(doc(db, 'posts', postId), { status: 'rejected' });
-                }
-
-                const post = allPosts.find(p => p.id === postId);
-                if (post) post.status = 'rejected';
-
-                showNotification('Пост отклонён', 'info');
-                loadPosts();
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showNotification('Ошибка при отклонении', 'error');
-            }
-        };
 
         // ============================================================
         // МОДАЛЬНОЕ ОКНО
@@ -1919,7 +1787,6 @@ ${post.text}
         function updateStats(posts) {
             document.getElementById('totalPosts').textContent = posts.length;
             document.getElementById('approvedPosts').textContent = posts.filter(p => p.status === 'approved').length;
-            document.getElementById('pendingPosts').textContent = posts.filter(p => p.status === 'pending').length;
             document.getElementById('totalPhotos').textContent = posts.filter(p => p.imageUrl || p.imageBase64).length;
         }
 
@@ -1930,12 +1797,11 @@ ${post.text}
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('archiveSection').style.display = 'none';
             document.getElementById('aboutSection').style.display = 'none';
-            document.getElementById('adminSection').style.display = 'none';
+            document.getElementById('submitContainer').style.display = 'none';
 
             if (section === 'home') document.getElementById('homeSection').style.display = 'block';
             else if (section === 'archive') document.getElementById('archiveSection').style.display = 'block';
             else if (section === 'about') document.getElementById('aboutSection').style.display = 'block';
-            else if (section === 'admin') document.getElementById('adminSection').style.display = 'block';
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
@@ -1965,8 +1831,6 @@ ${post.text}
         // ЗАПУСК
         // ============================================================
         initFirebase();
-
-        window._debug = { db, storage, firebaseReady };
     </script>
 
 </body>
