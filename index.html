@@ -1,1837 +1,880 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Архив истории Советского Техникума-Интерната</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Georgia', sans-serif;
-        }
-
-        :root {
-            --bg-dark: #0a0510;
-            --bg-mid: #12071f;
-            --bg-card: #1a0b2e;
-            --purple-main: #8a2be2;
-            --purple-light: #b57bff;
-            --purple-glow: #c99cff;
-            --text-main: #e0d5f0;
-            --text-muted: #9d88b8;
-        }
-
-        body {
-            background: #0a0510;
-            background-image:
-                radial-gradient(ellipse at top left, #1a0b2e 0%, transparent 50%),
-                radial-gradient(ellipse at bottom right, #2d1052 0%, transparent 50%),
-                radial-gradient(circle at center, #150722 0%, #0a0510 70%);
-            background-attachment: fixed;
-            min-height: 100vh;
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                radial-gradient(1px 1px at 20% 30%, #b57bff, transparent),
-                radial-gradient(1px 1px at 60% 70%, #8a2be2, transparent),
-                radial-gradient(1px 1px at 80% 10%, #c99cff, transparent),
-                radial-gradient(1px 1px at 40% 80%, #b57bff, transparent),
-                radial-gradient(1px 1px at 90% 50%, #8a2be2, transparent),
-                radial-gradient(1px 1px at 10% 60%, #c99cff, transparent),
-                radial-gradient(1px 1px at 70% 20%, #b57bff, transparent),
-                radial-gradient(1px 1px at 30% 90%, #8a2be2, transparent);
-            background-size: 200% 200%;
-            animation: stars 20s linear infinite;
-            pointer-events: none;
-            opacity: 0.6;
-            z-index: 0;
-        }
-
-        @keyframes stars {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        header {
-            background: linear-gradient(135deg, #1a0b2e 0%, #2d1052 50%, #1a0b2e 100%);
-            color: var(--text-main);
-            padding: 50px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 2px solid var(--purple-main);
-            box-shadow: 0 4px 40px rgba(138, 43, 226, 0.4);
-            z-index: 1;
-        }
-
-        header::before {
-            content: '★';
-            position: absolute;
-            font-size: 340px;
-            opacity: 0.05;
-            top: -100px;
-            right: -60px;
-            color: var(--purple-light);
-            text-shadow: 0 0 80px var(--purple-main);
-            animation: rotate 30s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--purple-light), var(--purple-main), var(--purple-light), transparent);
-            animation: glowLine 3s ease-in-out infinite;
-        }
-
-        @keyframes glowLine {
-            0%, 100% { opacity: 0.5; box-shadow: 0 0 10px var(--purple-light); }
-            50% { opacity: 1; box-shadow: 0 0 30px var(--purple-main), 0 0 60px var(--purple-light); }
-        }
-
-        header h1 {
-            font-size: 2.8em;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #e0d5f0, #b57bff, #8a2be2, #b57bff, #e0d5f0);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shine 4s linear infinite;
-            filter: drop-shadow(0 0 20px rgba(181, 123, 255, 0.5));
-            position: relative;
-            z-index: 1;
-        }
-
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-
-        header p {
-            font-style: italic;
-            font-size: 1.15em;
-            color: var(--text-muted);
-            position: relative;
-            z-index: 1;
-            letter-spacing: 1px;
-        }
-
-        nav {
-            background: rgba(18, 7, 31, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #2d1052;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav a {
-            color: #c4b0e0;
-            text-decoration: none;
-            font-size: 1.05em;
-            padding: 10px 22px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            position: relative;
-            font-weight: 500;
-        }
-
-        nav a:hover {
-            border-color: var(--purple-main);
-            color: #fff;
-            background: rgba(138, 43, 226, 0.2);
-            box-shadow: 0 0 25px rgba(138, 43, 226, 0.6), inset 0 0 15px rgba(138, 43, 226, 0.1);
-            text-shadow: 0 0 10px var(--purple-light);
-            transform: translateY(-2px);
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 35px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 45px 30px;
-            background: linear-gradient(135deg, rgba(26, 11, 46, 0.9), rgba(45, 16, 82, 0.6));
-            border-radius: 18px;
-            margin-bottom: 35px;
-            box-shadow: 0 8px 40px rgba(138, 43, 226, 0.25), inset 0 1px 0 rgba(181, 123, 255, 0.2);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            border-left: 5px solid var(--purple-main);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(138, 43, 226, 0.2), transparent 70%);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-20px, 20px); }
-        }
-
-        .hero h2 {
-            font-size: 1.9em;
-            color: var(--purple-light);
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(181, 123, 255, 0.6);
-            position: relative;
-            z-index: 1;
-            letter-spacing: 1px;
-        }
-
-        .hero p {
-            font-size: 1.08em;
-            line-height: 1.8;
-            color: #c4b0e0;
-            position: relative;
-            z-index: 1;
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        /* Форма отправки поста */
-        .submit-panel {
-            background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
-            border-radius: 18px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 40px rgba(138, 43, 226, 0.3);
-            border: 1px solid rgba(138, 43, 226, 0.4);
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-
-        .submit-panel.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .submit-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--purple-main), var(--purple-light), var(--purple-main));
-            animation: glowLine 3s ease-in-out infinite;
-        }
-
-        .submit-panel h3 {
-            color: var(--purple-light);
-            margin-bottom: 22px;
-            font-size: 1.45em;
-            border-bottom: 2px solid rgba(138, 43, 226, 0.4);
-            padding-bottom: 12px;
-            text-shadow: 0 0 15px rgba(181, 123, 255, 0.5);
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--purple-light);
-            font-size: 0.95em;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 13px 16px;
-            border: 2px solid rgba(138, 43, 226, 0.3);
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: inherit;
-            background: rgba(10, 5, 16, 0.8);
-            color: var(--text-main);
-            transition: all 0.3s;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #6b5a85;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--purple-main);
-            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2), 0 0 20px rgba(138, 43, 226, 0.4);
-            background: rgba(18, 7, 31, 0.9);
-        }
-
-        .form-group textarea {
-            min-height: 130px;
-            resize: vertical;
-        }
-
-        .photo-upload {
-            border: 3px dashed rgba(138, 43, 226, 0.4);
-            border-radius: 12px;
-            padding: 35px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(10, 5, 16, 0.6);
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .photo-upload:hover {
-            border-color: var(--purple-light);
-            background: rgba(138, 43, 226, 0.1);
-            box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
-        }
-
-        .photo-upload.has-file {
-            border-color: #4ade80;
-            background: rgba(74, 222, 128, 0.08);
-        }
-
-        .photo-upload input[type="file"] {
-            display: none;
-        }
-
-        .photo-upload .icon {
-            font-size: 3.2em;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 0 15px rgba(181, 123, 255, 0.6));
-            display: block;
-        }
-
-        .photo-upload p {
-            color: var(--text-muted);
-            font-size: 0.95em;
-        }
-
-        .photo-preview {
-            max-width: 100%;
-            max-height: 220px;
-            border-radius: 10px;
-            margin-top: 15px;
-            display: none;
-            box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
-            border: 2px solid var(--purple-main);
-        }
-
-        .btn {
-            padding: 13px 32px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.5);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #9d3ff5, var(--purple-main));
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(138, 43, 226, 0.8);
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .moderation-status {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-            font-weight: 600;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .moderation-status.pending {
-            background: rgba(255, 152, 0, 0.15);
-            border: 2px solid #ff9800;
-            color: #ffb74d;
-            display: block;
-            box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
-        }
-
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 28px;
-            margin-top: 20px;
-        }
-
-        .post-card {
-            background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.5), inset 0 1px 0 rgba(181, 123, 255, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .post-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(138, 43, 226, 0.15), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .post-card:hover::before {
-            opacity: 1;
-        }
-
-        .post-card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 15px 50px rgba(138, 43, 226, 0.5), inset 0 1px 0 rgba(181, 123, 255, 0.3);
-            border-color: var(--purple-light);
-        }
-
-        .post-card .post-image {
-            width: 100%;
-            height: 230px;
-            object-fit: cover;
-            background: #1a0b2e;
-            transition: transform 0.5s;
-        }
-
-        .post-card:hover .post-image {
-            transform: scale(1.05);
-        }
-
-        .post-card .post-body {
-            padding: 22px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .post-card .post-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.82em;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            margin-bottom: 14px;
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-        }
-
-        .post-card h3 {
-            color: var(--text-main);
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            line-height: 1.4;
-            transition: color 0.3s;
-        }
-
-        .post-card:hover h3 {
-            color: var(--purple-light);
-            text-shadow: 0 0 15px rgba(181, 123, 255, 0.5);
-        }
-
-        .post-card .post-text {
-            color: #b8a3d4;
-            line-height: 1.7;
-            font-size: 0.95em;
-            margin-bottom: 15px;
-        }
-
-        .post-card .post-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85em;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(138, 43, 226, 0.2);
-            padding-top: 14px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 20px;
-            background: rgba(18, 7, 31, 0.7);
-            border-radius: 14px;
-            border: 1px solid rgba(138, 43, 226, 0.25);
-            backdrop-filter: blur(10px);
-        }
-
-        .filters select,
-        .filters input {
-            padding: 11px 16px;
-            border: 2px solid rgba(138, 43, 226, 0.3);
-            border-radius: 10px;
-            font-size: 0.95em;
-            font-family: inherit;
-            background: rgba(10, 5, 16, 0.85);
-            color: var(--text-main);
-            transition: all 0.3s;
-            flex: 1;
-            min-width: 160px;
-        }
-
-        .filters select:focus,
-        .filters input:focus {
-            outline: none;
-            border-color: var(--purple-main);
-            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2), 0 0 20px rgba(138, 43, 226, 0.4);
-        }
-
-        .filters select option {
-            background: #1a0b2e;
-            color: var(--text-main);
-        }
-
-        .categories-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px;
-            margin-bottom: 35px;
-        }
-
-        .category-tile {
-            background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(45, 16, 82, 0.7));
-            border-radius: 16px;
-            padding: 28px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-tile::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(138, 43, 226, 0.2), transparent 30%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .category-tile:hover::before {
-            opacity: 1;
-            animation: spinTile 4s linear infinite;
-        }
-
-        @keyframes spinTile {
-            to { transform: rotate(360deg); }
-        }
-
-        .category-tile:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 40px rgba(138, 43, 226, 0.5);
-            border-color: var(--purple-light);
-        }
-
-        .category-tile.active {
-            border-color: var(--purple-light);
-            box-shadow: 0 0 30px rgba(138, 43, 226, 0.6), inset 0 0 20px rgba(138, 43, 226, 0.2);
-            background: linear-gradient(135deg, rgba(45, 16, 82, 0.95), rgba(26, 11, 46, 0.95));
-        }
-
-        .category-tile .emoji {
-            font-size: 2.8em;
-            display: block;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 0 15px rgba(181, 123, 255, 0.6));
-            transition: transform 0.3s;
-        }
-
-        .category-tile:hover .emoji {
-            transform: scale(1.15) rotate(-5deg);
-        }
-
-        .category-tile .name {
-            color: var(--purple-light);
-            font-size: 1.15em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .category-tile .count {
-            color: var(--text-muted);
-            font-size: 0.85em;
-            margin-top: 6px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal {
-            background: linear-gradient(135deg, #1a0b2e, #12071f);
-            border-radius: 20px;
-            max-width: 650px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 35px;
-            position: relative;
-            box-shadow: 0 20px 80px rgba(138, 43, 226, 0.6), inset 0 1px 0 rgba(181, 123, 255, 0.2);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-        }
-
-        .modal::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .modal::-webkit-scrollbar-track {
-            background: rgba(10, 5, 16, 0.5);
-            border-radius: 4px;
-        }
-
-        .modal::-webkit-scrollbar-thumb {
-            background: var(--purple-main);
-            border-radius: 4px;
-        }
-
-        .modal h3 {
-            color: var(--purple-light);
-            margin-bottom: 22px;
-            font-size: 1.6em;
-            text-shadow: 0 0 20px rgba(181, 123, 255, 0.5);
-            padding-right: 40px;
-        }
-
-        .modal .close-btn {
-            position: absolute;
-            top: 18px;
-            right: 22px;
-            font-size: 2.2em;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.3s;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            line-height: 1;
-        }
-
-        .modal .close-btn:hover {
-            color: var(--purple-light);
-            background: rgba(138, 43, 226, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .notification {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            padding: 16px 28px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            z-index: 2000;
-            transform: translateX(450px);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            max-width: 350px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            border-left: 4px solid #4ade80;
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #dc2626, #991b1b);
-            border-left: 4px solid #f87171;
-        }
-
-        .notification.info {
-            background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
-            border-left: 4px solid var(--purple-light);
-        }
-
-        footer {
-            background: linear-gradient(135deg, #0a0510, #12071f);
-            color: var(--text-muted);
-            text-align: center;
-            padding: 35px 20px;
-            margin-top: 60px;
-            font-size: 0.9em;
-            border-top: 1px solid rgba(138, 43, 226, 0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--purple-main), transparent);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 70px 20px;
-            color: var(--text-muted);
-            grid-column: 1 / -1;
-        }
-
-        .empty-state .icon {
-            font-size: 5.5em;
-            margin-bottom: 20px;
-            opacity: 0.4;
-            filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.6));
-            animation: floatIcon 3s ease-in-out infinite;
-        }
-
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .empty-state h3 {
-            color: var(--purple-light);
-            margin-bottom: 10px;
-            font-size: 1.4em;
-        }
-
-        .empty-state p {
-            color: var(--text-muted);
-            font-size: 1em;
-            max-width: 400px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 22px;
-            margin-bottom: 35px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(181, 123, 255, 0.15);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            border-top: 4px solid var(--purple-main);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .stat-card .number {
-            font-size: 2.8em;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--purple-light), var(--purple-main));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 6px;
-            position: relative;
-            z-index: 1;
-            filter: drop-shadow(0 0 15px rgba(181, 123, 255, 0.5));
-        }
-
-        .stat-card .label {
-            color: var(--text-muted);
-            font-size: 0.88em;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .firebase-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.88em;
-            margin-bottom: 25px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-
-        .firebase-status.connected {
-            background: rgba(74, 222, 128, 0.12);
-            color: #4ade80;
-            border: 1px solid rgba(74, 222, 128, 0.4);
-        }
-
-        .firebase-status.disconnected {
-            background: rgba(255, 152, 0, 0.12);
-            color: #ffb74d;
-            border: 1px solid rgba(255, 152, 0, 0.4);
-        }
-
-        .firebase-status .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        .firebase-status.connected .dot {
-            background: #4ade80;
-            box-shadow: 0 0 15px #4ade80;
-        }
-
-        .firebase-status.disconnected .dot {
-            background: #ffb74d;
-            box-shadow: 0 0 15px #ffb74d;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.85); }
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Кнопка "Поделиться" */
-        .share-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 1.8em;
-            box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6);
-            transition: all 0.3s;
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .share-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 12px 40px rgba(138, 43, 226, 0.9);
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.7em;
-                letter-spacing: 2px;
-            }
-
-            header p {
-                font-size: 1em;
-            }
-
-            .posts-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            nav {
-                gap: 8px;
-                padding: 12px 8px;
-            }
-
-            nav a {
-                padding: 8px 14px;
-                font-size: 0.95em;
-            }
-
-            .filters {
-                flex-direction: column;
-                padding: 15px;
-            }
-
-            .filters select,
-            .filters input {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .categories-row {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-
-            .category-tile {
-                padding: 20px 12px;
-            }
-
-            .category-tile .emoji {
-                font-size: 2em;
-            }
-
-            .category-tile .name {
-                font-size: 1em;
-            }
-
-            .hero {
-                padding: 30px 20px;
-            }
-
-            .hero h2 {
-                font-size: 1.5em;
-            }
-
-            .modal {
-                padding: 25px 20px;
-            }
-
-            .stat-card .number {
-                font-size: 2.2em;
-            }
-
-            .submit-panel {
-                padding: 22px 18px;
-            }
-
-            .share-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 1.5em;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .categories-row {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            header h1 {
-                font-size: 1.4em;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Архив истории Советского Техникума-Интерната</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+:root {
+    --purple-main: #8a2be2;
+    --purple-light: #b57bff;
+    --text-main: #e0d5f0;
+    --text-muted: #9d88b8;
+}
+body {
+    background: #0a0510;
+    background-image:
+        radial-gradient(ellipse at top left, #1a0b2e 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, #2d1052 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text-main);
+}
+header {
+    background: linear-gradient(135deg, #1a0b2e 0%, #2d1052 50%, #1a0b2e 100%);
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--purple-main);
+    box-shadow: 0 4px 40px rgba(138, 43, 226, 0.4);
+}
+header h1 {
+    font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #e0d5f0, #b57bff, #8a2be2, #b57bff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shine 4s linear infinite;
+    margin-bottom: 10px;
+}
+@keyframes shine { to { background-position: 200% center; } }
+header p { color: var(--text-muted); font-style: italic; }
+nav {
+    background: rgba(18, 7, 31, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2d1052;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav a {
+    color: #c4b0e0;
+    text-decoration: none;
+    padding: 10px 22px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+nav a:hover {
+    border-color: var(--purple-main);
+    color: #fff;
+    background: rgba(138, 43, 226, 0.2);
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.6);
+}
+.container { max-width: 1300px; margin: 0 auto; padding: 35px 20px; }
+.hero {
+    text-align: center;
+    padding: 45px 30px;
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.9), rgba(45, 16, 82, 0.6));
+    border-radius: 18px;
+    margin-bottom: 35px;
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-left: 5px solid var(--purple-main);
+}
+.hero h2 { color: var(--purple-light); margin-bottom: 15px; font-size: 1.9em; }
+.hero p { line-height: 1.8; color: #c4b0e0; max-width: 850px; margin: 0 auto; }
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 22px;
+    margin-bottom: 35px;
+}
+.stat-card {
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-top: 4px solid var(--purple-main);
+}
+.stat-card .number {
+    font-size: 2.5em;
+    font-weight: bold;
+    background: linear-gradient(135deg, var(--purple-light), var(--purple-main));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+}
+.stat-card .label { color: var(--text-muted); font-size: 0.88em; text-transform: uppercase; letter-spacing: 1.5px; }
+.categories-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 35px;
+}
+.category-tile {
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(45, 16, 82, 0.7));
+    border-radius: 16px;
+    padding: 25px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(138, 43, 226, 0.3);
+}
+.category-tile:hover {
+    transform: translateY(-5px);
+    border-color: var(--purple-light);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.5);
+}
+.category-tile.active {
+    border-color: var(--purple-light);
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.6);
+}
+.category-tile .emoji { font-size: 2.5em; display: block; margin-bottom: 10px; }
+.category-tile .name { color: var(--purple-light); font-size: 1.1em; font-weight: 600; }
+.category-tile .count { color: var(--text-muted); font-size: 0.85em; margin-top: 5px; }
+.filters { margin-bottom: 25px; padding: 20px; background: rgba(18, 7, 31, 0.7); border-radius: 14px; border: 1px solid rgba(138, 43, 226, 0.25); }
+.filters input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid rgba(138, 43, 226, 0.3);
+    border-radius: 10px;
+    font-size: 1em;
+    background: rgba(10, 5, 16, 0.85);
+    color: var(--text-main);
+}
+.filters input:focus { outline: none; border-color: var(--purple-main); box-shadow: 0 0 20px rgba(138, 43, 226, 0.4); }
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 28px;
+}
+.post-card {
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.post-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--purple-light);
+    box-shadow: 0 12px 40px rgba(138, 43, 226, 0.5);
+}
+.post-card .post-image { width: 100%; height: 230px; object-fit: cover; }
+.post-card .post-body { padding: 22px; }
+.post-card .post-category {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82em;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.post-card h3 { color: var(--text-main); font-size: 1.2em; margin-bottom: 10px; }
+.post-card .post-text { color: #b8a3d4; font-size: 0.95em; line-height: 1.6; }
+.post-card .post-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    color: var(--text-muted);
+    border-top: 1px solid rgba(138, 43, 226, 0.2);
+    padding-top: 12px;
+    margin-top: 12px;
+}
+.empty-state { text-align: center; padding: 70px 20px; grid-column: 1 / -1; }
+.empty-state .icon { font-size: 5em; margin-bottom: 20px; opacity: 0.4; }
+.empty-state h3 { color: var(--purple-light); margin-bottom: 10px; }
+.submit-panel {
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(18, 7, 31, 0.95));
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(138, 43, 226, 0.4);
+    display: none;
+}
+.submit-panel.active { display: block; }
+.submit-panel h3 { color: var(--purple-light); margin-bottom: 22px; font-size: 1.4em; padding-bottom: 12px; border-bottom: 2px solid rgba(138, 43, 226, 0.4); }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--purple-light); font-size: 0.95em; }
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid rgba(138, 43, 226, 0.3);
+    border-radius: 10px;
+    font-size: 1em;
+    font-family: inherit;
+    background: rgba(10, 5, 16, 0.8);
+    color: var(--text-main);
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--purple-main);
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+}
+.form-group textarea { min-height: 130px; resize: vertical; }
+.photo-upload {
+    border: 3px dashed rgba(138, 43, 226, 0.4);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(10, 5, 16, 0.6);
+}
+.photo-upload:hover { border-color: var(--purple-light); }
+.photo-upload input[type="file"] { display: none; }
+.photo-upload .icon { font-size: 3em; margin-bottom: 10px; display: block; }
+.photo-preview { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 15px; display: none; border: 2px solid var(--purple-main); }
+.btn {
+    padding: 13px 32px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(138, 43, 226, 0.5);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(138, 43, 226, 0.8); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.share-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-main), #6a1fb0);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8em;
+    box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6);
+    z-index: 500;
+}
+.share-btn:hover { transform: scale(1.1); }
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+    background: linear-gradient(135deg, #1a0b2e, #12071f);
+    border-radius: 20px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 35px;
+    position: relative;
+    border: 1px solid rgba(138, 43, 226, 0.5);
+}
+.modal .close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 2em;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.modal .close-btn:hover { color: var(--purple-light); }
+.notification {
+    position: fixed;
+    top: 25px; right: 25px;
+    padding: 16px 28px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    z-index: 2000;
+    transform: translateX(450px);
+    transition: transform 0.4s;
+    max-width: 350px;
+}
+.notification.show { transform: translateX(0); }
+.notification.success { background: linear-gradient(135deg, #16a34a, #15803d); }
+.notification.error { background: linear-gradient(135deg, #dc2626, #991b1b); }
+.notification.info { background: linear-gradient(135deg, var(--purple-main), #6a1fb0); }
+footer {
+    background: linear-gradient(135deg, #0a0510, #12071f);
+    color: var(--text-muted);
+    text-align: center;
+    padding: 35px 20px;
+    margin-top: 60px;
+    border-top: 1px solid rgba(138, 43, 226, 0.3);
+}
+@media (max-width: 768px) {
+    header h1 { font-size: 1.7em; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .categories-row { grid-template-columns: repeat(2, 1fr); }
+    .share-btn { width: 55px; height: 55px; font-size: 1.5em; }
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>★ Архив истории ★</h1>
-        <p>Советский Техникум-Интернат — страницы прошлого</p>
-    </header>
+<header>
+    <h1>★ Архив истории ★</h1>
+    <p>Советский Техникум-Интернат — страницы прошлого</p>
+</header>
 
-    <nav>
-        <a href="#" onclick="showSection('home'); return false;">🏠 Главная</a>
-        <a href="#" onclick="showSection('archive'); return false;">📚 Архив</a>
-        <a href="#" onclick="showSection('about'); return false;">ℹ️ О проекте</a>
-    </nav>
+<nav>
+    <a href="#" onclick="showSection('home'); return false;">🏠 Главная</a>
+    <a href="#" onclick="showSection('archive'); return false;">📚 Архив</a>
+    <a href="#" onclick="showSection('about'); return false;">ℹ️ О проекте</a>
+</nav>
 
-    <div class="container">
-
-        <div class="firebase-status disconnected" id="firebaseStatus">
-            <span class="dot"></span>
-            <span id="firebaseStatusText">Загрузка...</span>
+<div class="container">
+    <div id="homeSection">
+        <div class="hero">
+            <h2>Добро пожаловать в архив истории</h2>
+            <p>Смешные фотографии, снимки с прогулок, моменты из столовой и другие тёплые воспоминания. Нажмите ✏️ внизу справа, чтобы предложить материал.</p>
         </div>
 
-        <div id="homeSection">
-            <div class="hero">
-                <h2>Добро пожаловать в архив истории</h2>
-                <p>
-                    Этот сайт посвящён сохранению памяти о Советском Техникуме-Интернате.
-                    Здесь вы найдёте смешные фотографии, снимки с прогулок, моменты из столовой
-                    и другие тёплые воспоминания.
-                </p>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalPosts">0</div>
+                <div class="label">Всего постов</div>
             </div>
-
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="number" id="totalPosts">0</div>
-                    <div class="label">Всего постов</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="approvedPosts">0</div>
-                    <div class="label">Опубликовано</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="totalPhotos">0</div>
-                    <div class="label">Фотографий</div>
-                </div>
+            <div class="stat-card">
+                <div class="number" id="approvedPosts">0</div>
+                <div class="label">Опубликовано</div>
             </div>
-
-            <h2 style="color: var(--purple-light); margin-bottom: 20px; font-size: 1.6em; text-shadow: 0 0 20px rgba(181,123,255,0.5);">
-                ✨ Категории
-            </h2>
-            <div class="categories-row" id="categoriesRow">
-                <div class="category-tile active" data-category="all" onclick="selectCategory('all')">
-                    <span class="emoji">🌌</span>
-                    <div class="name">Все посты</div>
-                    <div class="count" id="count-all">0 постов</div>
-                </div>
-                <div class="category-tile" data-category="Смешные фото" onclick="selectCategory('Смешные фото')">
-                    <span class="emoji">😂</span>
-                    <div class="name">Смешные фото</div>
-                    <div class="count" id="count-funny">0 постов</div>
-                </div>
-                <div class="category-tile" data-category="Прогулка" onclick="selectCategory('Прогулка')">
-                    <span class="emoji">🌳</span>
-                    <div class="name">Прогулка</div>
-                    <div class="count" id="count-walk">0 постов</div>
-                </div>
-                <div class="category-tile" data-category="Еда" onclick="selectCategory('Еда')">
-                    <span class="emoji">🍲</span>
-                    <div class="name">Еда</div>
-                    <div class="count" id="count-food">0 постов</div>
-                </div>
-            </div>
-
-            <div class="filters">
-                <input type="text" id="searchInput" placeholder="🔍 Поиск по архиву..." oninput="filterPosts()">
-            </div>
-
-            <div class="posts-grid" id="postsGrid">
-                <div class="empty-state">
-                    <div class="icon">📭</div>
-                    <h3>Пока нет публикаций</h3>
-                    <p>Посты появятся здесь после одобрения модератором</p>
-                </div>
+            <div class="stat-card">
+                <div class="number" id="totalPhotos">0</div>
+                <div class="label">Фотографий</div>
             </div>
         </div>
 
-        <div id="archiveSection" style="display:none;">
-            <div class="hero">
-                <h2>📚 Архив материалов</h2>
-                <p>Полный список всех материалов, прошедших модерацию</p>
+        <h2 style="color: var(--purple-light); margin-bottom: 20px; font-size: 1.5em;">✨ Категории</h2>
+        <div class="categories-row">
+            <div class="category-tile active" data-category="all" onclick="selectCategory('all')">
+                <span class="emoji">🌌</span>
+                <div class="name">Все посты</div>
+                <div class="count" id="count-all">0 постов</div>
             </div>
-            <div class="posts-grid" id="archiveGrid">
-                <div class="empty-state">
-                    <div class="icon">📭</div>
-                    <h3>Архив пуст</h3>
-                    <p>Материалы появятся после одобрения</p>
-                </div>
+            <div class="category-tile" data-category="Смешные фото" onclick="selectCategory('Смешные фото')">
+                <span class="emoji">😂</span>
+                <div class="name">Смешные фото</div>
+                <div class="count" id="count-funny">0 постов</div>
             </div>
-        </div>
-
-        <div id="aboutSection" style="display:none;">
-            <div class="hero">
-                <h2>ℹ️ О проекте</h2>
-                <p>
-                    Этот сайт создан для сохранения исторического наследия Советского Техникума-Интерната.
-                    Мы собираем смешные фотографии, снимки с прогулок, моменты из столовой и другие
-                    тёплые воспоминания выпускников и преподавателей.
-                </p>
+            <div class="category-tile" data-category="Прогулка" onclick="selectCategory('Прогулка')">
+                <span class="emoji">🌳</span>
+                <div class="name">Прогулка</div>
+                <div class="count" id="count-walk">0 постов</div>
             </div>
-            <div class="hero">
-                <h2>⚙️ Как это работает</h2>
-                <p>
-                    1. Нажмите кнопку <strong style="color: var(--purple-light);">✏️</strong> внизу справа<br>
-                    2. Заполните форму и загрузите фотографию<br>
-                    3. Пост уходит модератору в Telegram<br>
-                    4. После одобрения он появляется на сайте
-                </p>
-            </div>
-            <div class="hero">
-                <h2>📞 Контакты</h2>
-                <p>
-                    По вопросам сотрудничества: <strong style="color: var(--purple-light);">archive@soviet-tech.ru</strong>
-                </p>
+            <div class="category-tile" data-category="Еда" onclick="selectCategory('Еда')">
+                <span class="emoji">🍲</span>
+                <div class="name">Еда</div>
+                <div class="count" id="count-food">0 постов</div>
             </div>
         </div>
 
-    </div>
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск по архиву..." oninput="filterPosts()">
+        </div>
 
-    <!-- Плавающая кнопка "Поделиться" -->
-    <button class="share-btn" onclick="toggleSubmitPanel()" title="Предложить материал">✏️</button>
-
-    <!-- Панель отправки (скрытая, открывается кнопкой) -->
-    <div class="container" id="submitContainer" style="display:none;">
-        <div class="submit-panel active">
-            <h3>✏️ Предложить материал в архив</h3>
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95em;">
-                Заполните форму — пост уйдёт на проверку модератору в Telegram
-            </p>
-
-            <div class="form-group">
-                <label>Заголовок *</label>
-                <input type="text" id="postTitle" placeholder="Введите заголовок...">
+        <div class="posts-grid" id="postsGrid">
+            <div class="empty-state">
+                <div class="icon">📭</div>
+                <h3>Пока нет публикаций</h3>
+                <p>Посты появятся здесь после одобрения</p>
             </div>
-
-            <div class="form-group">
-                <label>Категория *</label>
-                <select id="postCategory">
-                    <option value="Смешные фото">😂 Смешные фото</option>
-                    <option value="Прогулка">🌳 Прогулка</option>
-                    <option value="Еда">🍲 Еда</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Текст поста *</label>
-                <textarea id="postText" placeholder="Введите текст..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Фотография *</label>
-                <div class="photo-upload" id="photoUpload" onclick="document.getElementById('photoInput').click()">
-                    <span class="icon">📷</span>
-                    <p>Нажмите для загрузки фотографии</p>
-                    <p style="font-size:0.85em; color:#6b5a85; margin-top:5px;">JPG, PNG до 5MB</p>
-                    <img class="photo-preview" id="photoPreview">
-                </div>
-                <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoSelect(event)">
-            </div>
-
-            <div class="moderation-status" id="moderationStatus"></div>
-
-            <button class="btn btn-primary" id="submitBtn" onclick="submitPost()" style="width:100%;">
-                🚀 Отправить на модерацию
-            </button>
-            <button class="btn" onclick="toggleSubmitPanel()" style="width:100%; margin-top:10px; background: rgba(138,43,226,0.2); color: var(--purple-light); border: 2px solid rgba(138,43,226,0.4);">
-                Отмена
-            </button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <h3 id="modalTitle">Просмотр поста</h3>
-            <div id="modalContent"></div>
+    <div id="archiveSection" style="display:none;">
+        <div class="hero">
+            <h2>📚 Архив материалов</h2>
+            <p>Все одобренные посты</p>
+        </div>
+        <div class="posts-grid" id="archiveGrid">
+            <div class="empty-state">
+                <div class="icon">📭</div>
+                <h3>Архив пуст</h3>
+            </div>
         </div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div id="aboutSection" style="display:none;">
+        <div class="hero">
+            <h2>ℹ️ О проекте</h2>
+            <p>Архив истории Советского Техникума-Интерната. Собираем тёплые воспоминания выпускников.</p>
+        </div>
+        <div class="hero">
+            <h2>⚙️ Как добавить пост</h2>
+            <p>1. Нажмите кнопку ✏️ внизу справа<br>
+               2. Заполните форму, укажите ваш Telegram username<br>
+               3. Загрузите фото<br>
+               4. Пост отправится модератору в Telegram<br>
+               5. После одобрения он появится на сайте</p>
+        </div>
+    </div>
+</div>
 
-    <footer>
-        <p>© 2024 Архив истории Советского Техникума-Интерната</p>
-        <p style="margin-top: 8px;">Сохранение памяти — наша общая задача 💜</p>
-    </footer>
+<button class="share-btn" onclick="toggleSubmitPanel()" title="Предложить материал">✏️</button>
 
-    <script type="module">
-        // ============================================================
-        // КОНФИГУРАЦИЯ FIREBASE
-        // ============================================================
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+<div class="container" id="submitContainer" style="display:none;">
+    <div class="submit-panel active">
+        <h3>✏️ Предложить материал в архив</h3>
+
+        <div class="form-group">
+            <label>Заголовок *</label>
+            <input type="text" id="postTitle" placeholder="Введите заголовок...">
+        </div>
+
+        <div class="form-group">
+            <label>Ваш Telegram username *</label>
+            <input type="text" id="postAuthor" placeholder="@username">
+        </div>
+
+        <div class="form-group">
+            <label>Категория *</label>
+            <select id="postCategory">
+                <option value="Смешные фото">😂 Смешные фото</option>
+                <option value="Прогулка">🌳 Прогулка</option>
+                <option value="Еда">🍲 Еда</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Текст поста *</label>
+            <textarea id="postText" placeholder="Введите текст..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Фотография *</label>
+            <div class="photo-upload" id="photoUpload" onclick="document.getElementById('photoInput').click()">
+                <span class="icon">📷</span>
+                <p>Нажмите для загрузки фотографии</p>
+                <p style="font-size:0.85em; color:#6b5a85;">JPG, PNG до 5MB</p>
+                <img class="photo-preview" id="photoPreview">
+            </div>
+            <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoSelect(event)">
+        </div>
+
+        <div class="moderation-status" id="moderationStatus" style="display:none; padding:15px; border-radius:10px; background: rgba(255,152,0,0.15); border: 2px solid #ff9800; color: #ffb74d; margin-bottom: 20px; font-weight:600;"></div>
+
+        <button class="btn btn-primary" id="submitBtn" onclick="submitPost()" style="width:100%;">
+            🚀 Отправить на модерацию
+        </button>
+        <button class="btn" onclick="toggleSubmitPanel()" style="width:100%; margin-top:10px; background: rgba(138,43,226,0.2); color: var(--purple-light); border: 2px solid rgba(138,43,226,0.4);">
+            Отмена
+        </button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h3 id="modalTitle" style="color: var(--purple-light); margin-bottom: 20px;"></h3>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<footer>
+    <p>© 2024 Архив истории Советского Техникума-Интерната</p>
+    <p style="margin-top: 8px;">Сохранение памяти — наша общая задача 💜</p>
+</footer>
+
+<script type="module">
+// ============================================================
+// FIREBASE — замените на ваши данные
+// ============================================================
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "texnikym-148c0.firebaseapp.com",
+    projectId: "texnikym-148c0",
+    storageBucket: "texnikym-148c0.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+const TELEGRAM_BOT_TOKEN = "8949342076:AAGIMPeRnthC-CjyCSe6ME-4K9Z8JuVm2bI";
+const TELEGRAM_CHAT_ID = "7709067838";
+
+let db = null;
+let storage = null;
+let firebaseReady = false;
+let allPosts = [];
+let selectedPhoto = null;
+let currentCategory = 'all';
+
+async function initFirebase() {
+    try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const { getStorage } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js');
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        storage = getStorage(app);
+        firebaseReady = true;
+        console.log('✅ Firebase подключён');
+        loadPosts();
+    } catch (error) {
+        console.error('❌ Firebase:', error);
+        loadLocalPosts();
+    }
+}
+
+function loadLocalPosts() {
+    try {
+        const saved = localStorage.getItem('archive_posts');
+        allPosts = saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        allPosts = [];
+    }
+    renderPosts(allPosts);
+    updateStats(allPosts);
+}
+
+function saveLocalPosts() {
+    try { localStorage.setItem('archive_posts', JSON.stringify(allPosts)); } catch (e) {}
+}
+
+async function loadPosts() {
+    if (!firebaseReady) { loadLocalPosts(); return; }
+    try {
+        const { collection, query, orderBy, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+        allPosts = [];
+        snapshot.forEach(doc => allPosts.push({ id: doc.id, ...doc.data() }));
+        renderPosts(allPosts);
+        updateStats(allPosts);
+    } catch (error) {
+        console.error('Ошибка загрузки:', error);
+        loadLocalPosts();
+    }
+}
+
+window.handlePhotoSelect = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showNotification('Файл больше 5MB', 'error'); return; }
+    if (!file.type.startsWith('image/')) { showNotification('Выберите изображение', 'error'); return; }
+    selectedPhoto = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('photoPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        document.getElementById('photoUpload').classList.add('has-file');
+        document.querySelector('#photoUpload .icon').textContent = '✅';
+        document.querySelector('#photoUpload p').textContent = file.name;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.toggleSubmitPanel = function() {
+    const container = document.getElementById('submitContainer');
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        document.getElementById('homeSection').style.display = 'none';
+        document.getElementById('archiveSection').style.display = 'none';
+        document.getElementById('aboutSection').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        container.style.display = 'none';
+        document.getElementById('homeSection').style.display = 'block';
+    }
+};
+
+window.submitPost = async function() {
+    const title = document.getElementById('postTitle').value.trim();
+    const author = document.getElementById('postAuthor').value.trim();
+    const category = document.getElementById('postCategory').value;
+    const text = document.getElementById('postText').value.trim();
+
+    if (!title) { showNotification('Введите заголовок', 'error'); return; }
+    if (!author) { showNotification('Введите ваш Telegram username', 'error'); return; }
+    if (!text) { showNotification('Введите текст', 'error'); return; }
+    if (!selectedPhoto) { showNotification('Загрузите фото', 'error'); return; }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '⏳ Отправка...';
+
+    const statusEl = document.getElementById('moderationStatus');
+    statusEl.style.display = 'block';
+    statusEl.textContent = '⏳ Пост отправлен на проверку. Ожидайте решения модератора.';
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedPhoto);
+
+    reader.onload = async function(e) {
+        const base64Image = e.target.result;
+        const post = {
+            title: title,
+            category: category,
+            text: text,
+            author: author,
+            status: 'pending',
+            createdAt: new Date()
         };
 
-        // ============================================================
-        // КОНФИГУРАЦИЯ TELEGRAM БОТА
-        // ============================================================
-        const TELEGRAM_BOT_TOKEN = "8949342076:AAGIMPeRnthC-CjyCSe6ME-4K9Z8JuVm2bI";
-        const TELEGRAM_CHAT_ID = "7709067838";
+        let postId = null;
 
-        // URL вашего сайта (для кнопок в Telegram)
-        // Замените на реальный адрес, где будет размещён сайт
-        const SITE_URL = "https://your-site.com";
-
-        // ============================================================
-        // ИМПОРТ FIREBASE
-        // ============================================================
-        let db = null;
-        let storage = null;
-        let firebaseReady = false;
-
-        async function initFirebase() {
+        if (firebaseReady) {
             try {
-                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-                const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                const { getStorage } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js');
-
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                storage = getStorage(app);
-                firebaseReady = true;
-
-                document.getElementById('firebaseStatus').className = 'firebase-status connected';
-                document.getElementById('firebaseStatusText').textContent = '✅ Firebase подключён';
-
-                console.log('✅ Firebase подключён');
-                loadPosts();
+                const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                let imageUrl = '';
+                try {
+                    const { ref, uploadString, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js');
+                    const storageRef = ref(storage, 'posts/' + Date.now() + '_' + selectedPhoto.name);
+                    await uploadString(storageRef, base64Image, 'data_url');
+                    imageUrl = await getDownloadURL(storageRef);
+                } catch (err) {
+                    imageUrl = base64Image;
+                }
+                post.imageUrl = imageUrl;
+                const docRef = await addDoc(collection(db, 'posts'), post);
+                postId = docRef.id;
             } catch (error) {
-                console.error('❌ Firebase:', error);
-                document.getElementById('firebaseStatus').className = 'firebase-status disconnected';
-                document.getElementById('firebaseStatusText').textContent = '⚠️ Демо-режим';
-
-                // Пробуем загрузить локальные посты из localStorage
-                loadLocalPosts();
+                console.error('Ошибка Firebase:', error);
             }
+        } else {
+            post.id = 'local_' + Date.now();
+            post.imageUrl = base64Image;
+            postId = post.id;
+            allPosts.unshift(post);
+            saveLocalPosts();
         }
 
-        // ============================================================
-        // ЛОКАЛЬНЫЕ ПОСТЫ (для демо-режима)
-        // ============================================================
-        let allPosts = [];
+        await sendToTelegram(post, base64Image);
 
-        function loadLocalPosts() {
-            try {
-                const saved = localStorage.getItem('archive_posts');
-                allPosts = saved ? JSON.parse(saved) : [];
-            } catch (e) {
-                allPosts = [];
-            }
-            renderPosts(allPosts);
-            updateStats(allPosts);
-        }
+        resetForm();
+        showNotification('✅ Пост отправлен на модерацию!', 'success');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🚀 Отправить на модерацию';
+        renderPosts(allPosts);
+        updateStats(allPosts);
 
-        function saveLocalPosts() {
-            try {
-                localStorage.setItem('archive_posts', JSON.stringify(allPosts));
-            } catch (e) {
-                console.warn('Не удалось сохранить локально:', e);
-            }
-        }
+        setTimeout(() => { toggleSubmitPanel(); }, 3000);
+    };
+};
 
-        // ============================================================
-        // ЗАГРУЗКА ПОСТОВ
-        // ============================================================
-        async function loadPosts() {
-            if (!firebaseReady) {
-                loadLocalPosts();
-                return;
-            }
-
-            try {
-                const { collection, query, orderBy, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-
-                const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-                const snapshot = await getDocs(q);
-
-                allPosts = [];
-                snapshot.forEach(doc => {
-                    allPosts.push({ id: doc.id, ...doc.data() });
-                });
-
-                renderPosts(allPosts);
-                updateStats(allPosts);
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                loadLocalPosts();
-            }
-        }
-
-        // ============================================================
-        // ЗАГРУЗКА ФОТО
-        // ============================================================
-        let selectedPhoto = null;
-
-        window.handlePhotoSelect = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (file.size > 5 * 1024 * 1024) {
-                showNotification('Файл слишком большой. Максимум 5MB', 'error');
-                return;
-            }
-
-            if (!file.type.startsWith('image/')) {
-                showNotification('Пожалуйста, выберите изображение', 'error');
-                return;
-            }
-
-            selectedPhoto = file;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('photoPreview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-
-                document.getElementById('photoUpload').classList.add('has-file');
-                document.querySelector('#photoUpload .icon').textContent = '✅';
-                document.querySelector('#photoUpload p').textContent = file.name;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        // ============================================================
-        // ОТКРЫТЬ/ЗАКРЫТЬ ПАНЕЛЬ ОТПРАВКИ
-        // ============================================================
-        window.toggleSubmitPanel = function() {
-            const container = document.getElementById('submitContainer');
-            if (container.style.display === 'none') {
-                container.style.display = 'block';
-                // Скрываем остальные секции
-                document.getElementById('homeSection').style.display = 'none';
-                document.getElementById('archiveSection').style.display = 'none';
-                document.getElementById('aboutSection').style.display = 'none';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                container.style.display = 'none';
-                document.getElementById('homeSection').style.display = 'block';
-            }
-        };
-
-        // ============================================================
-        // ОТПРАВКА ПОСТА
-        // ============================================================
-        window.submitPost = async function() {
-            const title = document.getElementById('postTitle').value.trim();
-            const category = document.getElementById('postCategory').value;
-            const text = document.getElementById('postText').value.trim();
-
-            if (!title) { showNotification('Введите заголовок', 'error'); return; }
-            if (!text) { showNotification('Введите текст поста', 'error'); return; }
-            if (!selectedPhoto) { showNotification('Загрузите фотографию', 'error'); return; }
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Отправка...';
-
-            try {
-                const statusEl = document.getElementById('moderationStatus');
-                statusEl.className = 'moderation-status pending';
-                statusEl.textContent = '⏳ Пост отправлен на проверку. Ожидайте решения модератора.';
-
-                const reader = new FileReader();
-                reader.readAsDataURL(selectedPhoto);
-
-                reader.onload = async function(e) {
-                    const base64Image = e.target.result;
-
-                    const post = {
-                        title: title,
-                        category: category,
-                        text: text,
-                        status: 'pending',
-                        createdAt: new Date(),
-                        author: 'Гость'
-                    };
-
-                    let postId = null;
-
-                    // Сохраняем в Firebase
-                    if (firebaseReady) {
-                        try {
-                            const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-
-                            let imageUrl = '';
-                            try {
-                                const { ref, uploadString, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js');
-                                const storageRef = ref(storage, 'posts/' + Date.now() + '_' + selectedPhoto.name);
-                                await uploadString(storageRef, base64Image, 'data_url');
-                                imageUrl = await getDownloadURL(storageRef);
-                            } catch (err) {
-                                console.warn('Storage недоступен:', err);
-                                imageUrl = base64Image;
-                            }
-
-                            post.imageUrl = imageUrl;
-                            const docRef = await addDoc(collection(db, 'posts'), post);
-                            postId = docRef.id;
-                            console.log('✅ Пост сохранён в Firebase:', postId);
-                        } catch (error) {
-                            console.error('Ошибка сохранения в Firebase:', error);
-                        }
-                    } else {
-                        // Демо-режим
-                        post.id = 'local_' + Date.now();
-                        post.imageUrl = base64Image;
-                        postId = post.id;
-                        allPosts.unshift(post);
-                        saveLocalPosts();
-                    }
-
-                    // Отправляем в Telegram
-                    await sendToTelegram(post, base64Image, postId);
-
-                    resetForm();
-                    showNotification('✅ Пост отправлен на модерацию!', 'success');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '🚀 Отправить на модерацию';
-
-                    renderPosts(allPosts);
-                    updateStats(allPosts);
-
-                    // Закрываем панель через 3 секунды
-                    setTimeout(() => {
-                        toggleSubmitPanel();
-                    }, 3000);
-                };
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showNotification('Ошибка отправки поста', 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Отправить на модерацию';
-            }
-        };
-
-        // ============================================================
-        // ОТПРАВКА В TELEGRAM
-        // ============================================================
-        async function sendToTelegram(post, base64Image, postId) {
-            try {
-                const categoryEmoji = {
-                    'Смешные фото': '😂',
-                    'Прогулка': '🌳',
-                    'Еда': '🍲'
-                }[post.category] || '📷';
-
-                const message = `
+async function sendToTelegram(post, base64Image) {
+    try {
+        const emoji = { 'Смешные фото': '😂', 'Прогулка': '🌳', 'Еда': '🍲' }[post.category] || '📷';
+        const message = `
 📝 *Новый пост на модерации*
 
-${categoryEmoji} *Категория:* ${post.category}
+${emoji} *Категория:* ${post.category}
 📌 *Заголовок:* ${post.title}
 👤 *Автор:* ${post.author}
 
 📄 *Текст:*
 ${post.text}
 
-🆔 *ID поста:* \`${postId}\`
-
-⏳ Ожидает проверки
 📅 ${new Date().toLocaleString('ru-RU')}
+        `;
 
-💡 *Чтобы одобрить или отклонить пост:*
-Откройте админ-бота и используйте команды:
-\`/approve ${postId}\`
-\`/reject ${postId}\`
-                `;
-
-                // Отправляем текст
-                const textResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                });
-
-                const textResult = await textResponse.json();
-                if (textResult.ok) {
-                    console.log('✅ Текст отправлен в Telegram');
-                } else {
-                    console.error('❌ Ошибка Telegram:', textResult);
-                }
-
-                // Отправляем фото
-                if (base64Image) {
-                    try {
-                        const response = await fetch(base64Image);
-                        const blob = await response.blob();
-
-                        const formData = new FormData();
-                        formData.append('chat_id', TELEGRAM_CHAT_ID);
-                        formData.append('photo', blob, 'photo.jpg');
-                        formData.append('caption', `📷 Фото к посту: ${post.title}\n🆔 ${postId}`);
-                        formData.append('parse_mode', 'Markdown');
-
-                        const photoResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        const photoResult = await photoResponse.json();
-                        if (photoResult.ok) {
-                            console.log('✅ Фото отправлено в Telegram');
-                        }
-                    } catch (err) {
-                        console.error('Ошибка отправки фото:', err);
-                    }
-                }
-            } catch (error) {
-                console.error('Ошибка отправки в Telegram:', error);
-            }
-        }
-
-        // ============================================================
-        // СБРОС ФОРМЫ
-        // ============================================================
-        function resetForm() {
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postText').value = '';
-            document.getElementById('postCategory').selectedIndex = 0;
-            document.getElementById('photoInput').value = '';
-            document.getElementById('photoPreview').style.display = 'none';
-            document.getElementById('photoPreview').src = '';
-            document.getElementById('photoUpload').classList.remove('has-file');
-            document.querySelector('#photoUpload .icon').textContent = '📷';
-            document.querySelector('#photoUpload p').textContent = 'Нажмите для загрузки фотографии';
-            selectedPhoto = null;
-
-            setTimeout(() => {
-                const statusEl = document.getElementById('moderationStatus');
-                statusEl.className = 'moderation-status';
-                statusEl.textContent = '';
-            }, 4000);
-        }
-
-        // ============================================================
-        // ОТОБРАЖЕНИЕ ПОСТОВ
-        // ============================================================
-        let currentCategory = 'all';
-
-        function renderPosts(posts) {
-            const grid = document.getElementById('postsGrid');
-            const archiveGrid = document.getElementById('archiveGrid');
-
-            const approvedPosts = posts.filter(p => p.status === 'approved');
-
-            updateCategoryCounts(posts);
-
-            if (grid) {
-                const filtered = filterByCategory(approvedPosts, currentCategory);
-                if (filtered.length === 0) {
-                    grid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">📭</div>
-                            <h3>Пока нет публикаций</h3>
-                            <p>Посты появятся здесь после одобрения модератором</p>
-                        </div>
-                    `;
-                } else {
-                    grid.innerHTML = filtered.map(post => createPostCard(post)).join('');
-                }
-            }
-
-            if (archiveGrid) {
-                if (approvedPosts.length === 0) {
-                    archiveGrid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">📭</div>
-                            <h3>Архив пуст</h3>
-                            <p>Материалы появятся после одобрения</p>
-                        </div>
-                    `;
-                } else {
-                    archiveGrid.innerHTML = approvedPosts.map(post => createPostCard(post)).join('');
-                }
-            }
-
-            window._allPosts = posts;
-        }
-
-        function filterByCategory(posts, category) {
-            if (category === 'all') return posts;
-            return posts.filter(p => p.category === category);
-        }
-
-        function updateCategoryCounts(posts) {
-            const approved = posts.filter(p => p.status === 'approved');
-
-            const countAll = document.getElementById('count-all');
-            const countFunny = document.getElementById('count-funny');
-            const countWalk = document.getElementById('count-walk');
-            const countFood = document.getElementById('count-food');
-
-            const plural = (n) => {
-                if (n % 10 === 1 && n % 100 !== 11) return 'пост';
-                if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return 'поста';
-                return 'постов';
-            };
-
-            if (countAll) countAll.textContent = approved.length + ' ' + plural(approved.length);
-            if (countFunny) {
-                const n = approved.filter(p => p.category === 'Смешные фото').length;
-                countFunny.textContent = n + ' ' + plural(n);
-            }
-            if (countWalk) {
-                const n = approved.filter(p => p.category === 'Прогулка').length;
-                countWalk.textContent = n + ' ' + plural(n);
-            }
-            if (countFood) {
-                const n = approved.filter(p => p.category === 'Еда').length;
-                countFood.textContent = n + ' ' + plural(n);
-            }
-        }
-
-        function getCategoryEmoji(category) {
-            return {
-                'Смешные фото': '😂',
-                'Прогулка': '🌳',
-                'Еда': '🍲'
-            }[category] || '📷';
-        }
-
-        function createPostCard(post) {
-            const date = post.createdAt ? new Date(post.createdAt.seconds ? post.createdAt.seconds * 1000 : post.createdAt).toLocaleDateString('ru-RU') : '';
-            const imageUrl = post.imageUrl || post.imageBase64 || 'https://via.placeholder.com/800x600/1a0b2e/b57bff?text=Фото';
-            const emoji = getCategoryEmoji(post.category);
-
-            return `
-                <div class="post-card" onclick="openPostModal('${post.id}')">
-                    <img class="post-image" src="${imageUrl}" alt="${post.title}" loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/800x600/1a0b2e/b57bff?text=Фото'">
-                    <div class="post-body">
-                        <span class="post-category">${emoji} ${post.category}</span>
-                        <h3>${escapeHtml(post.title)}</h3>
-                        <p class="post-text">${escapeHtml(post.text.substring(0, 150))}${post.text.length > 150 ? '...' : ''}</p>
-                        <div class="post-meta">
-                            <span>📅 ${date}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ============================================================
-        // МОДАЛЬНОЕ ОКНО
-        // ============================================================
-        window.openPostModal = function(postId) {
-            const post = (window._allPosts || []).find(p => p.id === postId);
-            if (!post) return;
-
-            const modal = document.getElementById('modalOverlay');
-            const title = document.getElementById('modalTitle');
-            const content = document.getElementById('modalContent');
-
-            const date = post.createdAt ? new Date(post.createdAt.seconds ? post.createdAt.seconds * 1000 : post.createdAt).toLocaleDateString('ru-RU') : '';
-            const imageUrl = post.imageUrl || post.imageBase64 || '';
-            const emoji = getCategoryEmoji(post.category);
-
-            title.textContent = post.title;
-            content.innerHTML = `
-                ${imageUrl ? `<img src="${imageUrl}" style="width:100%; border-radius:12px; margin-bottom:18px; box-shadow: 0 0 30px rgba(138,43,226,0.5); border: 2px solid var(--purple-main);" onerror="this.style.display='none'">` : ''}
-                <p style="color: var(--purple-light); font-weight: bold; margin-bottom: 12px; font-size: 1.05em;">${emoji} ${post.category} • 📅 ${date}</p>
-                <p style="line-height: 1.8; color: #c4b0e0; font-size: 1.02em;">${escapeHtml(post.text)}</p>
-                ${post.author ? `<p style="margin-top: 18px; color: var(--text-muted); font-size: 0.9em; padding-top: 12px; border-top: 1px solid rgba(138,43,226,0.3);">👤 Автор: ${escapeHtml(post.author)}</p>` : ''}
-            `;
-
-            modal.classList.add('active');
-        };
-
-        window.closeModal = function() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        };
-
-        document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
         });
 
-        // ============================================================
-        // ВЫБОР КАТЕГОРИИ
-        // ============================================================
-        window.selectCategory = function(category) {
-            currentCategory = category;
-
-            document.querySelectorAll('.category-tile').forEach(tile => {
-                tile.classList.remove('active');
-                if (tile.dataset.category === category) {
-                    tile.classList.add('active');
-                }
+        if (base64Image) {
+            const response = await fetch(base64Image);
+            const blob = await response.blob();
+            const formData = new FormData();
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('photo', blob, 'photo.jpg');
+            formData.append('caption', `📷 ${post.title}\n👤 ${post.author}`);
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: formData
             });
-
-            filterPosts();
-        };
-
-        // ============================================================
-        // ФИЛЬТРАЦИЯ
-        // ============================================================
-        window.filterPosts = function() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-
-            let filtered = (window._allPosts || []).filter(p => p.status === 'approved');
-
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
-            }
-
-            if (search) {
-                filtered = filtered.filter(p =>
-                    p.title.toLowerCase().includes(search) ||
-                    p.text.toLowerCase().includes(search)
-                );
-            }
-
-            const grid = document.getElementById('postsGrid');
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">🔍</div>
-                        <h3>Ничего не найдено</h3>
-                        <p>Попробуйте изменить параметры поиска</p>
-                    </div>
-                `;
-            } else {
-                grid.innerHTML = filtered.map(post => createPostCard(post)).join('');
-            }
-        };
-
-        // ============================================================
-        // СТАТИСТИКА
-        // ============================================================
-        function updateStats(posts) {
-            document.getElementById('totalPosts').textContent = posts.length;
-            document.getElementById('approvedPosts').textContent = posts.filter(p => p.status === 'approved').length;
-            document.getElementById('totalPhotos').textContent = posts.filter(p => p.imageUrl || p.imageBase64).length;
         }
+    } catch (error) {
+        console.error('Ошибка Telegram:', error);
+    }
+}
 
-        // ============================================================
-        // НАВИГАЦИЯ
-        // ============================================================
-        window.showSection = function(section) {
-            document.getElementById('homeSection').style.display = 'none';
-            document.getElementById('archiveSection').style.display = 'none';
-            document.getElementById('aboutSection').style.display = 'none';
-            document.getElementById('submitContainer').style.display = 'none';
+function resetForm() {
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postAuthor').value = '';
+    document.getElementById('postText').value = '';
+    document.getElementById('postCategory').selectedIndex = 0;
+    document.getElementById('photoInput').value = '';
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoPreview').src = '';
+    document.getElementById('photoUpload').classList.remove('has-file');
+    document.querySelector('#photoUpload .icon').textContent = '📷';
+    document.querySelector('#photoUpload p').textContent = 'Нажмите для загрузки фотографии';
+    selectedPhoto = null;
+    setTimeout(() => { document.getElementById('moderationStatus').style.display = 'none'; }, 4000);
+}
 
-            if (section === 'home') document.getElementById('homeSection').style.display = 'block';
-            else if (section === 'archive') document.getElementById('archiveSection').style.display = 'block';
-            else if (section === 'about') document.getElementById('aboutSection').style.display = 'block';
+function renderPosts(posts) {
+    const grid = document.getElementById('postsGrid');
+    const archiveGrid = document.getElementById('archiveGrid');
+    const approved = posts.filter(p => p.status === 'approved');
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+    updateCategoryCounts(posts);
 
-        // ============================================================
-        // УВЕДОМЛЕНИЯ
-        // ============================================================
-        window.showNotification = function(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
+    if (grid) {
+        const filtered = filterByCategory(approved, currentCategory);
+        grid.innerHTML = filtered.length === 0
+            ? `<div class="empty-state"><div class="icon">📭</div><h3>Пока нет публикаций</h3><p>Посты появятся после одобрения</p></div>`
+            : filtered.map(createPostCard).join('');
+    }
 
-            setTimeout(() => notification.classList.add('show'), 10);
-            setTimeout(() => notification.classList.remove('show'), 4000);
-        };
+    if (archiveGrid) {
+        archiveGrid.innerHTML = approved.length === 0
+            ? `<div class="empty-state"><div class="icon">📭</div><h3>Архив пуст</h3></div>`
+            : approved.map(createPostCard).join('');
+    }
 
-        // ============================================================
-        // ВСПОМОГАТЕЛЬНЫЕ
-        // ============================================================
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+    window._allPosts = posts;
+}
 
-        // ============================================================
-        // ЗАПУСК
-        // ============================================================
-        initFirebase();
-    </script>
+function filterByCategory(posts, category) {
+    if (category === 'all') return posts;
+    return posts.filter(p => p.category === category);
+}
 
+function updateCategoryCounts(posts) {
+    const approved = posts.filter(p => p.status === 'approved');
+    const plural = (n) => {
+        if (n % 10 === 1 && n % 100 !== 11) return 'пост';
+        if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return 'поста';
+        return 'постов';
+    };
+    document.getElementById('count-all').textContent = approved.length + ' ' + plural(approved.length);
+    const nF = approved.filter(p => p.category === 'Смешные фото').length;
+    const nW = approved.filter(p => p.category === 'Прогулка').length;
+    const nE = approved.filter(p => p.category === 'Еда').length;
+    document.getElementById('count-funny').textContent = nF + ' ' + plural(nF);
+    document.getElementById('count-walk').textContent = nW + ' ' + plural(nW);
+    document.getElementById('count-food').textContent = nE + ' ' + plural(nE);
+}
+
+function getEmoji(cat) {
+    return { 'Смешные фото': '😂', 'Прогулка': '🌳', 'Еда': '🍲' }[cat] || '📷';
+}
+
+function createPostCard(post) {
+    const date = post.createdAt ? new Date(post.createdAt.seconds ? post.createdAt.seconds * 1000 : post.createdAt).toLocaleDateString('ru-RU') : '';
+    const imageUrl = post.imageUrl || post.imageBase64 || '';
+    const emoji = getEmoji(post.category);
+    return `
+        <div class="post-card" onclick="openPostModal('${post.id}')">
+            ${imageUrl ? `<img class="post-image" src="${imageUrl}" loading="lazy" onerror="this.style.display='none'">` : ''}
+            <div class="post-body">
+                <span class="post-category">${emoji} ${post.category}</span>
+                <h3>${escapeHtml(post.title)}</h3>
+                <p class="post-text">${escapeHtml(post.text.substring(0, 150))}${post.text.length > 150 ? '...' : ''}</p>
+                <div class="post-meta">
+                    <span>👤 ${escapeHtml(post.author || 'Аноним')}</span>
+                    <span>📅 ${date}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+window.openPostModal = function(postId) {
+    const post = (window._allPosts || []).find(p => p.id === postId);
+    if (!post) return;
+    const date = post.createdAt ? new Date(post.createdAt.seconds ? post.createdAt.seconds * 1000 : post.createdAt).toLocaleDateString('ru-RU') : '';
+    const imageUrl = post.imageUrl || post.imageBase64 || '';
+    const emoji = getEmoji(post.category);
+    document.getElementById('modalTitle').textContent = post.title;
+    document.getElementById('modalContent').innerHTML = `
+        ${imageUrl ? `<img src="${imageUrl}" style="width:100%; border-radius:12px; margin-bottom:18px; border: 2px solid var(--purple-main);" onerror="this.style.display='none'">` : ''}
+        <p style="color: var(--purple-light); font-weight: bold; margin-bottom: 12px;">${emoji} ${post.category} • 📅 ${date}</p>
+        <p style="line-height: 1.8; color: #c4b0e0;">${escapeHtml(post.text)}</p>
+        <p style="margin-top: 18px; color: var(--text-muted); font-size: 0.9em; padding-top: 12px; border-top: 1px solid rgba(138,43,226,0.3);">👤 Автор: ${escapeHtml(post.author || 'Аноним')}</p>
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+};
+
+window.closeModal = function() {
+    document.getElementById('modalOverlay').classList.remove('active');
+};
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+window.selectCategory = function(category) {
+    currentCategory = category;
+    document.querySelectorAll('.category-tile').forEach(t => {
+        t.classList.remove('active');
+        if (t.dataset.category === category) t.classList.add('active');
+    });
+    filterPosts();
+};
+
+window.filterPosts = function() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    let filtered = (window._allPosts || []).filter(p => p.status === 'approved');
+    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+    if (search) filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(search) || p.text.toLowerCase().includes(search));
+    const grid = document.getElementById('postsGrid');
+    grid.innerHTML = filtered.length === 0
+        ? `<div class="empty-state"><div class="icon">🔍</div><h3>Ничего не найдено</h3></div>`
+        : filtered.map(createPostCard).join('');
+};
+
+function updateStats(posts) {
+    document.getElementById('totalPosts').textContent = posts.length;
+    document.getElementById('approvedPosts').textContent = posts.filter(p => p.status === 'approved').length;
+    document.getElementById('totalPhotos').textContent = posts.filter(p => p.imageUrl || p.imageBase64).length;
+}
+
+window.showSection = function(section) {
+    document.getElementById('homeSection').style.display = 'none';
+    document.getElementById('archiveSection').style.display = 'none';
+    document.getElementById('aboutSection').style.display = 'none';
+    document.getElementById('submitContainer').style.display = 'none';
+    if (section === 'home') document.getElementById('homeSection').style.display = 'block';
+    else if (section === 'archive') document.getElementById('archiveSection').style.display = 'block';
+    else if (section === 'about') document.getElementById('aboutSection').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.showNotification = function(message, type = 'info') {
+    const n = document.getElementById('notification');
+    n.textContent = message;
+    n.className = `notification ${type}`;
+    setTimeout(() => n.classList.add('show'), 10);
+    setTimeout(() => n.classList.remove('show'), 4000);
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+initFirebase();
+</script>
 </body>
 </html>
