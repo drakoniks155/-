@@ -1,72 +1,89 @@
 import os
+import json
 import telebot
 from telebot import types
 import firebase_admin
 from firebase_admin import credentials, firestore
-import json
 
 # ============================================================
-# НАСТРОЙКИ (замените на свои)
+# НАСТРОЙКИ (читаются из переменных окружения Render)
 # ============================================================
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8949342076:AAGIMPeRnthC-CjyCSe6ME-4K9Z8JuVm2bI")
-ADMIN_ID = int(os.environ.get("ADMIN_ID", 7709067838))
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+ADMIN_ID = int(os.environ.get("ADMIN_ID", 0))
+FIREBASE_JSON = os.environ.get("FIREBASE_JSON")
 
-# Путь к файлу с ключом Firebase (service account JSON)
-FIREBASE_KEY_PATH = os.environ.get("FIREBASE_KEY_PATH", "firebase-key.json")
+# ============================================================
+# ПРОВЕРКА ПЕРЕМЕННЫХ
+# ============================================================
+print("=" * 50)
+print("🚀 Запуск бота...")
+print(f"BOT_TOKEN: {'✅ есть' if BOT_TOKEN else '❌ НЕТ'}")
+print(f"ADMIN_ID: {ADMIN_ID if ADMIN_ID else '❌ НЕТ'}")
+print(f"FIREBASE_JSON: {'✅ есть' if FIREBASE_JSON else '❌ НЕТ'}")
+print("=" * 50)
 
 # ============================================================
 # ИНИЦИАЛИЗАЦИЯ FIREBASE
 # ============================================================
-try:
-    # Если переменная окружения содержит JSON-строку
-    firebase_json = os.environ.get("FIREBASE_JSON")
-    if firebase_json:
-        cred = credentials.Certificate(json.loads(firebase_json))
-    else:
-        # Иначе читаем из файла
-        cred = credentials.Certificate(FIREBASE_KEY_PATH)
+db = None
 
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-    print("✅ Firebase успешно подключён")
-except Exception as e:
-    print(f"❌ Ошибка подключения Firebase: {e}")
-    db = None
+if FIREBASE_JSON:
+    try:
+        cred_dict = json.loads(FIREBASE_JSON)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("✅ Firebase успешно подключён")
+    except json.JSONDecodeError as e:
+        print(f"❌ Ошибка JSON в FIREBASE_JSON: {e}")
+    except Exception as e:
+        print(f"❌ Ошибка Firebase: {e}")
+else:
+    print("❌ FIREBASE_JSON не найден в переменных окружения")
 
 # ============================================================
 # ИНИЦИАЛИЗАЦИЯ БОТА
 # ============================================================
+if not BOT_TOKEN:
+    print("❌ BOT_TOKEN не найден — бот не может запуститься")
+    exit(1)
+
 bot = telebot.TeleBot(BOT_TOKEN)
 
+
 # ============================================================
-# КОМАНДА /start
+# /start и /help
 # ============================================================
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     if message.from_user.id != ADMIN_ID:
-        bot.reply_to(message, "❌ У вас нет доступа к этому боту.")
+        bot.reply_to(message, "⛔ У вас нет доступа к этому боту.")
         return
 
-    welcome_text = """
-👋 *Добро пожаловать в бот модерации архива!*
+    text = """
+👋 *Привет, администратор!*
 
-📋 *Доступные команды:*
+Я бот для модерации постов архива Советского Техникума-Интерната.
 
-`/pending` — список постов на модерации
-`/approve <ID>` — одобрить пост
-`/reject <ID>` — отклонить пост
-`/stats` — статистика архива
-`/help` — это сообщение
+📋 *Команды:*
+
+/pending — список постов на модерации
+/approve `<ID>` — одобрить пост
+/reject `<ID>` — отклонить пост
+/stats — статистика архива
+/help — эта справка
 
 💡 *Как это работает:*
 1. Пользователь отправляет пост через сайт
-2. Вы получаете уведомление в этом боте
-3. Используйте команды для модерации
+2. Пост сохраняется в Firebase со статусом "pending"
+3. Вы получаете уведомление здесь
+4. Одобряете или отклоняете пост командой
     """
-    bot.reply_to(message, welcome_text, parse_mode='Markdown')
+    bot.reply_to(message, text, parse_mode='Markdown')
+
 
 # ============================================================
-# КОМАНДА /pending — список постов на модерации
+# /pending — список постов на модерации
 # ============================================================
 @bot.message_handler(commands=['pending'])
 def list_pending(message):
@@ -79,45 +96,38 @@ def list_pending(message):
 
     try:
         posts_ref = db.collection('posts')
-        query = posts_ref.where('status', '==', 'pending').order_by('createdAt', direction=firestore.Query.DESCENDING)
-        docs = query.stream()
+        query = posts_ref.where('status', '==', 'pending')
+        docs = list(query.stream())
 
-        pending_posts = []
-        for doc in docs:
-            data = doc.to_dict()
-            pending_posts.append({
-                'id': doc.id,
-                'title': data.get('title', 'Без названия'),
-                'category': data.get('category', ''),
-                'createdAt': data.get('createdAt', '')
-            })
-
-        if not pending_posts:
+        if not docs:
             bot.reply_to(message, "✅ Нет постов на модерации")
             return
 
-        text = "📋 *Посты на модерации:*\n\n"
-        for i, post in enumerate(pending_posts, 1):
-            text += f"{i}. *{post['title']}*\n"
-            text += f"   🆔 `{post['id']}`\n"
-            text += f"   📂 {post['category']}\n\n"
+        text = f"📋 *Постов на модерации: {len(docs)}*\n\n"
+        for i, doc in enumerate(docs, 1):
+            data = doc.to_dict()
+            title = data.get('title', 'Без названия')
+            category = data.get('category', '')
+            text += f"{i}. *{title}*\n"
+            text += f"   📂 {category}\n"
+            text += f"   🆔 `{doc.id}`\n\n"
 
-        text += "💡 Используйте `/approve <ID>` или `/reject <ID>`"
-
+        text += "💡 `/approve <ID>` или `/reject <ID>`"
         bot.reply_to(message, text, parse_mode='Markdown')
 
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка: {e}")
 
+
 # ============================================================
-# КОМАНДА /approve — одобрить пост
+# /approve <ID> — одобрить пост
 # ============================================================
 @bot.message_handler(commands=['approve'])
 def approve_post(message):
     if message.from_user.id != ADMIN_ID:
         return
 
-    args = message.text.split()
+    args = message.text.split(maxsplit=1)
     if len(args) < 2:
         bot.reply_to(message, "❌ Использование: `/approve <ID>`", parse_mode='Markdown')
         return
@@ -133,7 +143,7 @@ def approve_post(message):
         post_doc = post_ref.get()
 
         if not post_doc.exists:
-            bot.reply_to(message, f"❌ Пост с ID `{post_id}` не найден", parse_mode='Markdown')
+            bot.reply_to(message, f"❌ Пост `{post_id}` не найден", parse_mode='Markdown')
             return
 
         post_ref.update({'status': 'approved'})
@@ -143,15 +153,16 @@ def approve_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка: {e}")
 
+
 # ============================================================
-# КОМАНДА /reject — отклонить пост
+# /reject <ID> — отклонить пост
 # ============================================================
 @bot.message_handler(commands=['reject'])
 def reject_post(message):
     if message.from_user.id != ADMIN_ID:
         return
 
-    args = message.text.split()
+    args = message.text.split(maxsplit=1)
     if len(args) < 2:
         bot.reply_to(message, "❌ Использование: `/reject <ID>`", parse_mode='Markdown')
         return
@@ -167,7 +178,7 @@ def reject_post(message):
         post_doc = post_ref.get()
 
         if not post_doc.exists:
-            bot.reply_to(message, f"❌ Пост с ID `{post_id}` не найден", parse_mode='Markdown')
+            bot.reply_to(message, f"❌ Пост `{post_id}` не найден", parse_mode='Markdown')
             return
 
         post_ref.update({'status': 'rejected'})
@@ -177,8 +188,9 @@ def reject_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка: {e}")
 
+
 # ============================================================
-# КОМАНДА /stats — статистика
+# /stats — статистика архива
 # ============================================================
 @bot.message_handler(commands=['stats'])
 def show_stats(message):
@@ -191,14 +203,14 @@ def show_stats(message):
 
     try:
         posts_ref = db.collection('posts')
-        all_posts = list(posts_ref.stream())
+        all_docs = list(posts_ref.stream())
 
-        total = len(all_posts)
-        approved = sum(1 for p in all_posts if p.to_dict().get('status') == 'approved')
-        pending = sum(1 for p in all_posts if p.to_dict().get('status') == 'pending')
-        rejected = sum(1 for p in all_posts if p.to_dict().get('status') == 'rejected')
+        total = len(all_docs)
+        approved = sum(1 for d in all_docs if d.to_dict().get('status') == 'approved')
+        pending = sum(1 for d in all_docs if d.to_dict().get('status') == 'pending')
+        rejected = sum(1 for d in all_docs if d.to_dict().get('status') == 'rejected')
 
-        stats_text = f"""
+        text = f"""
 📊 *Статистика архива*
 
 📝 Всего постов: *{total}*
@@ -206,22 +218,24 @@ def show_stats(message):
 ⏳ На модерации: *{pending}*
 ❌ Отклонено: *{rejected}*
         """
-        bot.reply_to(message, stats_text, parse_mode='Markdown')
+        bot.reply_to(message, text, parse_mode='Markdown')
 
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка: {e}")
 
+
 # ============================================================
-# ОБРАБОТКА НЕИЗВЕСТНЫХ СООБЩЕНИЙ
+# Обработка остальных сообщений
 # ============================================================
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
+@bot.message_handler(func=lambda m: True)
+def echo(message):
     if message.from_user.id == ADMIN_ID:
         bot.reply_to(message, "🤖 Используйте /help для списка команд")
 
+
 # ============================================================
-# ЗАПУСК БОТА
+# ЗАПУСК
 # ============================================================
 if __name__ == '__main__':
-    print("🚀 Бот запущен...")
-    bot.infinity_polling()
+    print("🤖 Бот запущен и слушает сообщения...")
+    bot.infinity_polling(timeout=60, long_polling_timeout=60)
