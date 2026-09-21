@@ -99,11 +99,11 @@ def category_keyboard():
     kb.add(
         types.KeyboardButton("😂 Смешные фото"),
         types.KeyboardButton("🌳 Прогулка"),
-        types.KeyboardButton("🍲 Еда")
+        types.KeyboardButton("🍲 Еда"),
+        types.KeyboardButton("✏️ Другое")
     )
     kb.add(types.KeyboardButton("❌ Отмена"))
     return kb
-
 
 # ============================================================
 # /start
@@ -313,12 +313,28 @@ def handle_text(message):
             reply_markup=category_keyboard()
         )
         return
-
     if state and state["step"] == "waiting_category":
+        # Если пользователь нажал «✏️ Другое» — ждём свою категорию
+        if text == "✏️ Другое":
+            state["step"] = "waiting_custom_category"
+            bot.send_message(
+                chat_id,
+                "✏️ *Введите свою категорию*\n\n"
+                "Например: «Спорт», «Учёба», «Праздники»",
+                parse_mode='Markdown',
+                reply_markup=cancel_keyboard()
+            )
+            return
+
+        # Иначе — стандартная категория
         category = text.replace("😂 ", "").replace("🌳 ", "").replace("🍲 ", "").strip()
         if category not in ["Смешные фото", "Прогулка", "Еда"]:
-            bot.send_message(chat_id, "❌ Выберите категорию из списка")
+            bot.send_message(
+                chat_id,
+                "❌ Выберите категорию из списка или нажмите «✏️ Другое»"
+            )
             return
+
         state["data"]["category"] = category
         state["step"] = "waiting_photo"
         bot.send_message(
@@ -328,6 +344,28 @@ def handle_text(message):
             reply_markup=cancel_keyboard()
         )
         return
+
+    # Пользователь вводит СВОЮ категорию
+    if state and state["step"] == "waiting_custom_category":
+        custom_cat = text.strip()
+        if len(custom_cat) < 2:
+            bot.send_message(chat_id, "❌ Слишком короткое название. Введите хотя бы 2 символа")
+            return
+        if len(custom_cat) > 30:
+            bot.send_message(chat_id, "❌ Слишком длинное название. Максимум 30 символов")
+            return
+
+        state["data"]["category"] = custom_cat
+        state["step"] = "waiting_photo"
+        bot.send_message(
+            chat_id,
+            f"✅ Категория: *{custom_cat}*\n\n"
+            f"📌 *Шаг 3 из 3*\n\nОтправьте *фотографию* 📷",
+            parse_mode='Markdown',
+            reply_markup=cancel_keyboard()
+        )
+        return
+    
 
     if state and state["step"] == "waiting_photo":
         bot.send_message(chat_id, "📷 Отправьте фото или нажмите «Отмена»")
